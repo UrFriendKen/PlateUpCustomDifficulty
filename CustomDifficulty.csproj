@@ -7,7 +7,7 @@
     <ProjectGuid>{F9086435-4BC0-48AC-B0EE-E2A345DE53C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CustomDifficulty</RootNamespace>
+    <RootNamespace>KitchenCustomDifficulty</RootNamespace>
     <AssemblyName>CustomDifficulty</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -125,7 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckGameOverFromLife.cs" />
+    <Compile Include="DayLengthController.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
+    <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
     <Compile Include="Patches\StartNewDay_Patch.cs" />
     <Compile Include="DeterminePlayerSpeed.cs" />
     <Compile Include="Helpers\MenuPreference.cs" />

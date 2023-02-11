@@ -5,7 +5,7 @@ using Unity.Entities;
 namespace KitchenCustomDifficulty.Patches
 {
     [HarmonyPatch]
-    public static class StartNewDay_Patch
+    internal static class StartNewDay_Patch
     {
         [HarmonyPatch(typeof(StartNewDay), "BecomeDay")]
         [HarmonyPrefix]

@@ -20,7 +20,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "0.3.9";
+        public const string MOD_VERSION = "0.4.0";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -37,6 +37,8 @@ namespace KitchenCustomDifficulty
         public const string PLAYER_CUSTOMERS_ENABLED_ID = "playerCustomersEnabled";
         public const string BASE_PLAYER_CUSTOMERS_ID = "basePlayerCustomers";
         public const string CUSTOMERS_PER_PLAYER_ID = "playerCustomerMultiplier";
+
+        public const string DAY_LENGTH_ID = "dayLength";
 
         public const string PLAYER_PATIENCE_ENABLED_ID = "playerPatienceEnabled";
         public const string BASE_PLAYER_PATIENCE_ID = "basePlayerPatienceMultiplier";
@@ -190,6 +192,7 @@ namespace KitchenCustomDifficulty
                 { PLAYER_CUSTOMERS_ENABLED_ID, 0 },
                 { BASE_PLAYER_CUSTOMERS_ID, 80 },
                 { CUSTOMERS_PER_PLAYER_ID, 25 },
+                { DAY_LENGTH_ID, 100 },
                 { PLAYER_PATIENCE_ENABLED_ID, 0 },
                 { BASE_PLAYER_PATIENCE_ID, 75 },
                 { PATIENCE_PER_PLAYER_ID, 25 },
@@ -283,6 +286,10 @@ namespace KitchenCustomDifficulty
 
             PrefManager.AddSpacer();
 
+            CreateIntOptionRow("Day Length Multiplier", DAY_LENGTH_ID, 10, 300, 10, true, true);
+
+            PrefManager.AddSpacer();
+
             CreateEnableDisableRow("Custom Patience", PLAYER_PATIENCE_ENABLED_ID);
             CreateIntOptionRow("Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
             CreateIntOptionRow("Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
@@ -317,7 +324,7 @@ namespace KitchenCustomDifficulty
 
             PrefManager.AddSpacer();
 
-            PrefManager.AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed." +
+            PrefManager.AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed.\n" +
                 "Set all of them to \"Mod Compatibility\" which allows the other mod to overwrite Custom Difficulty. Use with Caution.");
             CreateIntOptionRow("Prep - Player Speed Modifier", PLAYER_SPEED_PREP_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);
             CreateIntOptionRow("Day - Player Speed Modifier", PLAYER_SPEED_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);

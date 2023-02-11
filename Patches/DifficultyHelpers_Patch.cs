@@ -5,7 +5,7 @@ using KitchenLib.Utils;
 namespace KitchenCustomDifficulty.Patches
 {
     [HarmonyPatch(typeof(DifficultyHelpers))]
-    public class DifficultyHelpers_Patch
+    internal class DifficultyHelpers_Patch
     {
         
         [HarmonyPriority(200)]
