@@ -8,9 +8,6 @@ using System.Reflection;
 using Unity.Entities;
 using UnityEngine;
 
-//using KitchenCustomDifficulty.Views;
-
-
 // Namespace should have "Kitchen" in the beginning
 namespace KitchenCustomDifficulty
 {
