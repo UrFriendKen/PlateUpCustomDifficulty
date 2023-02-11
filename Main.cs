@@ -260,7 +260,7 @@ namespace KitchenCustomDifficulty
 
             PrefManager.AddSubmenu("Shop", "shop");
 
-            CreateIntOptionRow("Appliance Blueprint Count", SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 0, 15, 1, false, false);
+            CreateIntOptionRow("Appliance Blueprint Count", SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 0, 20, 1, false, false);
             CreateIntOptionRow("Staple Appliance Blueprint Count", SHOP_STAPLE_BLUEPRINTS_ID, 0, 6, 1, true, false);
 
             PrefManager.AddSpacer();
@@ -278,14 +278,14 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSubmenu("Customers", "customers");
 
             CreateEnableDisableRow("Custom Group Count", PLAYER_CUSTOMERS_ENABLED_ID);
-            CreateIntOptionRow("Base Customer Count", BASE_PLAYER_CUSTOMERS_ID, 0, 300, 10, false, true);
-            CreateIntOptionRow("Customers Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 300, 10, false, true);
+            CreateIntOptionRow("Base Customer Count", BASE_PLAYER_CUSTOMERS_ID, 0, 500, 10, false, true);
+            CreateIntOptionRow("Customers Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 500, 10, false, true);
 
             PrefManager.AddSpacer();
 
             CreateEnableDisableRow("Custom Patience", PLAYER_PATIENCE_ENABLED_ID);
-            CreateIntOptionRow("Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 300, 10, false, true);
-            CreateIntOptionRow("Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 300, 10, false, true);
+            CreateIntOptionRow("Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
+            CreateIntOptionRow("Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
 
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
