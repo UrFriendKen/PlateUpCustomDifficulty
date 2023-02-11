@@ -14,6 +14,7 @@ using UnityEngine;
 
 namespace KitchenCustomDifficulty.Preferences
 {
+    // TODO Check code to make sure deeper submenus work.
     internal class IntArrayGenerator
     {
         public delegate string IntToStringConversion (string prefKey, int value);
@@ -133,12 +134,14 @@ namespace KitchenCustomDifficulty.Preferences
 
         private bool _mainMenuRegistered = false;
         private bool _pauseMenuRegistered = false;
-        Type _mainTopLevelTypeKey = null;
-        Type _pauseTopLevelTypeKey = null;
+        private Type _mainTopLevelTypeKey;
+        private Type _pauseTopLevelTypeKey;
         private Queue<Type> _mainMenuTypeKeys = new Queue<Type>();
         private Queue<Type> _pauseMenuTypeKeys = new Queue<Type>();
-        private Stack<List<(ElementType, object)>> _elements = new Stack<List<(ElementType, object)>>();
         private Queue<List<(ElementType, object)>> _completedElements = new Queue<List<(ElementType, object)>>();
+        private Stack<Type> _tempMainMenuTypeKeys = new Stack<Type>();
+        private Stack<Type> _tempPauseMenuTypeKeys = new Stack<Type>();
+        private Stack<List<(ElementType, object)>> _elements = new Stack<List<(ElementType, object)>>();
         internal enum ElementType
         {
             Label,
@@ -162,7 +165,6 @@ namespace KitchenCustomDifficulty.Preferences
             _assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(new AssemblyName($"{this.GetType().Namespace}.{MOD_GUID}"), AssemblyBuilderAccess.Run);
             _moduleBuilder = _assemblyBuilder.DefineDynamicModule("Module");
 
-            _elements = new Stack<List<(ElementType, object)>>();
             _mainTopLevelTypeKey = CreateTypeKey($"{sWhitespace.Replace(MOD_NAME, "")}_Main");
             _pauseTopLevelTypeKey = CreateTypeKey($"{sWhitespace.Replace(MOD_NAME, "")}_Pause");
             _elements.Push(new List<(ElementType, object)>());
@@ -568,12 +570,12 @@ namespace KitchenCustomDifficulty.Preferences
         {
             Type mainTypeKey = CreateTypeKey($"{sWhitespace.Replace(MOD_NAME, "")}_{sWhitespace.Replace(submenu_key, "")}_Main");
             Type pauseTypeKey = CreateTypeKey($"{sWhitespace.Replace(MOD_NAME, "")}_{sWhitespace.Replace(submenu_key, "")}_Pause");
-            if (_mainMenuTypeKeys.Contains(mainTypeKey))
+            if (_mainMenuTypeKeys.Contains(mainTypeKey) || _tempMainMenuTypeKeys.Contains(mainTypeKey))
             {
                 throw new ArgumentException("Submenu key already exists!");
             }
-            _mainMenuTypeKeys.Enqueue(mainTypeKey);
-            _pauseMenuTypeKeys.Enqueue(pauseTypeKey);
+            _tempMainMenuTypeKeys.Push(mainTypeKey);
+            _tempPauseMenuTypeKeys.Push(pauseTypeKey);
             _elements.Peek().Add((ElementType.SubmenuButton, new SubmenuButtonData(button_text, mainTypeKey, pauseTypeKey, skip_stack)));
             _elements.Push(new List<(ElementType, object)>());
         }
@@ -590,11 +592,11 @@ namespace KitchenCustomDifficulty.Preferences
 
         public void SubmenuDone()
         {
-            if (_elements.Count < 1)
+            if (_elements.Count < 2)
             {
                 throw new Exception("Submenu depth already at highest level.");
             }
-            _completedElements.Enqueue(_elements.Pop());
+            CompletedSubmenuTransfer();
         }
 
         private Type CreateTypeKey(string typeName)
@@ -605,18 +607,25 @@ namespace KitchenCustomDifficulty.Preferences
             return type;
         }
 
+        private void CompletedSubmenuTransfer()
+        {
+            _completedElements.Enqueue(_elements.Pop());
+            _mainMenuTypeKeys.Enqueue(_tempMainMenuTypeKeys.Pop());
+            _pauseMenuTypeKeys.Enqueue(_tempPauseMenuTypeKeys.Pop());
+        }
+
         public void RegisterMenu(MenuType menuType)
         {
             Load();
+            _tempMainMenuTypeKeys.Push(_mainTopLevelTypeKey);
+            _tempPauseMenuTypeKeys.Push(_pauseTopLevelTypeKey);
 
-            _mainMenuTypeKeys.Enqueue(_mainTopLevelTypeKey);
-            _pauseMenuTypeKeys.Enqueue(_pauseTopLevelTypeKey);
             if (!_isKLPreferencesEventsRegistered)
             {
                 _isKLPreferencesEventsRegistered = true;
                 while (_elements.Count > 0)
                 {
-                    _completedElements.Enqueue(_elements.Pop());
+                    CompletedSubmenuTransfer();
                 }
 
                 //bool first = true;

@@ -1,5 +1,6 @@
 ﻿using Kitchen;
 using KitchenCustomDifficulty.Preferences;
+using KitchenData;
 using KitchenLib;
 using KitchenMods;
 using System;
@@ -46,26 +47,9 @@ namespace KitchenCustomDifficulty
         #endregion
 
         #region Order Preferences
-        /*public const string ORDER_STARTER_MODIFIER_ID = "starterModifier";
-        public const int ORDER_STARTER_MODIFIER_INITIAL = 25;
-        public static readonly MenuPreference OrderStarterModifierPreference = new MenuPreference(ORDER_STARTER_MODIFIER_ID,
-                                                                                                  -2,
-                                                                                                  "Starter Chance");
-
-
+        public const string ORDER_STARTER_MODIFIER_ID = "starterModifier";
         public const string ORDER_SIDES_MODIFIER_ID = "sidesModifier";
-        public const int ORDER_SIDES_MODIFIER_INITIAL = 25;
-        public static readonly MenuPreference OrderSidesModifierPreference = new MenuPreference(ORDER_SIDES_MODIFIER_ID,
-                                                                                                -2,
-                                                                                                "Sides Chance");
-
-
         public const string ORDER_DESSERT_MODIFIER_ID = "dessertModifier";
-        public const int ORDER_DESSERT_MODIFIER_INITIAL = 25;
-        public static readonly MenuPreference OrderDessertModifierPreference = new MenuPreference(ORDER_DESSERT_MODIFIER_ID,
-                                                                                                  -2,
-                                                                                                  "Dessert Chance");
-        */
         #endregion
 
         #region Order Cards Preferences
@@ -197,9 +181,9 @@ namespace KitchenCustomDifficulty
                 { BASE_PLAYER_PATIENCE_ID, 75 },
                 { PATIENCE_PER_PLAYER_ID, 25 },
 
-                //{ ORDER_STARTER_MODIFIER_ID, OrderStarterModifierPreference },
-                //{ ORDER_SIDES_MODIFIER_ID, OrderSidesModifierPreference },
-                //{ ORDER_DESSERT_MODIFIER_ID, OrderDessertModifierPreference },
+                { ORDER_STARTER_MODIFIER_ID, 100 },
+                { ORDER_SIDES_MODIFIER_ID, 100 },
+                { ORDER_DESSERT_MODIFIER_ID, 100 },
 
                 //{ CHANGE_MIND_MODIFIER_ID, ChangeMindModifierPreference},
                 //{ REPEAT_COURSE_MODIFIER_ID, RepeatCourseModifierPreference },
@@ -280,19 +264,33 @@ namespace KitchenCustomDifficulty
 
             PrefManager.AddSubmenu("Restaurant", "restaurant");
 
+            PrefManager.AddSubmenu("Group Count", "groupCount");
             CreateEnableDisableRow("Custom Group Count", PLAYER_CUSTOMERS_ENABLED_ID);
             CreateIntOptionRow("Base Group Count", BASE_PLAYER_CUSTOMERS_ID, 0, 500, 10, false, true);
             CreateIntOptionRow("Group Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 500, 10, false, true);
-
             PrefManager.AddSpacer();
-
-            CreateIntOptionRow("Day Length Multiplier", DAY_LENGTH_ID, 10, 300, 10, true, true);
-
             PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
 
+            PrefManager.AddSubmenu("Patience", "patience");
             CreateEnableDisableRow("Custom Patience", PLAYER_PATIENCE_ENABLED_ID);
             CreateIntOptionRow("Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
             CreateIntOptionRow("Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
+            PrefManager.AddSpacer();
+            PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
+
+            PrefManager.AddSubmenu("Orders", "orders");
+            CreateIntOptionRow("Starter Chance Multiplier", ORDER_STARTER_MODIFIER_ID, 0, 500, 25, false, true);
+            CreateIntOptionRow("Sides Chance Multiplier", ORDER_SIDES_MODIFIER_ID, 0, 500, 25, false, true);
+            CreateIntOptionRow("Dessert Chance Multiplier", ORDER_DESSERT_MODIFIER_ID, 0, 500, 25, false, true);
+            PrefManager.AddSpacer();
+            PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
+
+
+            CreateIntOptionRow("Day Length Multiplier", DAY_LENGTH_ID, 10, 300, 10, true, true);
+
 
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
