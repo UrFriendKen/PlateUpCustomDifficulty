@@ -126,12 +126,10 @@
   <ItemGroup>
     <Compile Include="CheckGameOverFromLife.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
-    <None Include="Patches\LocalViewRouter_Patch.cs" />
     <Compile Include="Patches\StartNewDay_Patch.cs" />
     <Compile Include="DeterminePlayerSpeed.cs" />
     <Compile Include="Helpers\MenuPreference.cs" />
     <Compile Include="Main.cs" />
-    <None Include="Menus\CustomDifficultyPreferences.cs" />
     <Compile Include="Patches\DifficultyHelpers_Patch.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
