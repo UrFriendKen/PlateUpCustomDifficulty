@@ -1,6 +1,5 @@
-﻿using System;
-using KitchenLib.Utils;
-using UnityEngine;
+﻿using KitchenLib.Utils;
+using System;
 
 namespace KitchenCustomDifficulty
 {

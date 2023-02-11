@@ -25,7 +25,7 @@ namespace KitchenCustomDifficulty
             SKitchenStatus kitchenStatus = GetSingleton<SKitchenStatus>();
             if (kitchenStatus.RemainingLives <= 0 && !HasSingleton<CRestartChanceOnLossIssued>())
             {
-                int isRestartChanceEnabled = Main.RestartOnLossPreference.Load(Main.MOD_GUID);
+                int isRestartChanceEnabled = Main.PrefManager.Get<int>(Main.RESTART_ON_LOSS_ID);
                 if (!HasSingleton<SGameOver>() && !Has<SPracticeMode>() && isRestartChanceEnabled == 1)
                 {
                     base.World.Add(new COfferRestartDay

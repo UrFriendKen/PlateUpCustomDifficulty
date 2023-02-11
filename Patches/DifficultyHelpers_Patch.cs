@@ -16,7 +16,7 @@ namespace KitchenCustomDifficulty.Patches
             int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID).Value;
 
             if (prefVal == -1)
-                __result = Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_INITIAL;
+                __result = Main.DefaultValuesDict[Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID];
             else
                 __result = prefVal;
         }
@@ -32,7 +32,7 @@ namespace KitchenCustomDifficulty.Patches
                 return;
 
             if (prefVal == -1)
-                __result = Main.SHOP_STAPLE_BLUEPRINTS_INITIAL;
+                __result = Main.DefaultValuesDict[Main.SHOP_STAPLE_BLUEPRINTS_ID];
             else
                 __result = prefVal;
         }
@@ -48,7 +48,7 @@ namespace KitchenCustomDifficulty.Patches
                 return;
 
             if (prefVal == -1)
-                __result = Main.SHOP_UPGRADED_CHANCE_INITIAL / 100f;
+                __result = Main.DefaultValuesDict[Main.SHOP_UPGRADED_CHANCE_ID] / 100f;
             else
                 __result = prefVal / 100f;
         }
@@ -76,7 +76,7 @@ namespace KitchenCustomDifficulty.Patches
             int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.FIRE_SPREAD_ID).Value;
 
             if (prefVal == -1)
-                __result = Main.FIRE_SPREAD_INITIAL/100f;
+                __result = Main.DefaultValuesDict[Main.FIRE_SPREAD_ID]/100f;
             else
                 __result = prefVal/100f;
         }
@@ -107,11 +107,11 @@ namespace KitchenCustomDifficulty.Patches
 
             int multiplier = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.CUSTOMERS_PER_PLAYER_ID).Value;
             if (multiplier == -1)
-                multiplier = Main.CUSTOMERS_PER_PLAYER_INITIAL;
+                multiplier = Main.DefaultValuesDict[Main.CUSTOMERS_PER_PLAYER_ID];
 
             int baseVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.BASE_PLAYER_CUSTOMERS_ID).Value;
             if (baseVal == -1)
-                baseVal = Main.BASE_PLAYER_CUSTOMERS_INITIAL;
+                baseVal = Main.DefaultValuesDict[Main.BASE_PLAYER_CUSTOMERS_ID];
             
             int playerMultiplier = (player_count < 2) ? 0 : (player_count - 1);
             float customerPlayersRateModifier = baseVal / 100f
@@ -131,11 +131,11 @@ namespace KitchenCustomDifficulty.Patches
 
             int multiplier = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.PATIENCE_PER_PLAYER_ID).Value;
             if (multiplier == -1)
-                multiplier = Main.PATIENCE_PER_PLAYER_INITIAL;
+                multiplier = Main.DefaultValuesDict[Main.PATIENCE_PER_PLAYER_ID];
 
             int baseVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.BASE_PLAYER_PATIENCE_ID).Value;
             if (baseVal == -1)
-                baseVal = Main.BASE_PLAYER_PATIENCE_INITIAL;
+                baseVal = Main.DefaultValuesDict[Main.BASE_PLAYER_PATIENCE_ID];
 
             int playerMultiplier = (player_count < 2) ? 0 : (player_count - 1);
             float patiencePlayersRateModifier = baseVal / 100f

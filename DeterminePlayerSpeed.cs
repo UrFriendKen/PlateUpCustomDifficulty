@@ -12,10 +12,10 @@ namespace KitchenCustomDifficulty
 
         protected override void OnUpdate()
         {
-
+            // Refactor, clean up, Use Has<SIsNightTime>()? a : b;
             if (Has<SIsNightTime>())
             {
-                int playerSpeedPrepMultipler = Main.PlayerSpeedPrepPreference.Load(Main.MOD_GUID);
+                int playerSpeedPrepMultipler = Main.PrefManager.Get<int>(Main.PLAYER_SPEED_PREP_ID);
 
                 if (playerSpeedPrepMultipler != -2)
                 {
@@ -32,7 +32,7 @@ namespace KitchenCustomDifficulty
             }
             else
             {
-                int playerSpeedMultipler = Main.PlayerSpeedPreference.Load(Main.MOD_GUID);
+                int playerSpeedMultipler = Main.PrefManager.Get<int>(Main.PLAYER_SPEED_ID);
 
                 if (playerSpeedMultipler != -2)
                 {

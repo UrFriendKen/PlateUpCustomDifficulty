@@ -11,8 +11,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPrefix]
         public static bool BecomeDay_Prefix(StartNewDay __instance)
         {
-            Main.LogInfo($"PrepEndPreference = {Main.RestartFromPrepEndPreference.Load(Main.MOD_GUID)}");
-            if (!__instance.HasSingleton<SPracticeMode>() && Main.RestartFromPrepEndPreference.Load(Main.MOD_GUID) == 1)
+            if (!__instance.HasSingleton<SPracticeMode>() && Main.PrefManager.Get<int>(Main.RESTART_FROM_PREP_END_ID) == 1)
             {
                 Main.LogInfo("Saving at start of day.");
                 Persistence.BackupWorld<WorldBackupSystem>(World.DefaultGameObjectInjectionWorld.EntityManager);
