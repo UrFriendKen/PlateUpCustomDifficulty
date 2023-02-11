@@ -127,6 +127,7 @@
     <Compile Include="CheckGameOverFromLife.cs" />
     <Compile Include="DayLengthController.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
+    <Compile Include="Patches\OrderingValues_Patch.cs" />
     <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
     <Compile Include="Patches\StartNewDay_Patch.cs" />
     <Compile Include="DeterminePlayerSpeed.cs" />

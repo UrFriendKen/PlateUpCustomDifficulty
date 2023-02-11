@@ -101,7 +101,7 @@ namespace KitchenCustomDifficulty
         #region Misc Preferences
         public const string FIRE_SPREAD_ID = "fireSpread";
 
-        //public const string MESS_FACTOR_ID = "messFactor";
+        public const string MESS_FACTOR_ID = "messFactor";
 
         public const string RESTART_ON_LOSS_ID = "offerRestartOnLoss";
         public const string RESTART_FROM_PREP_END_ID = "restartFromPrepEnd";
@@ -212,7 +212,7 @@ namespace KitchenCustomDifficulty
 
 
                 { FIRE_SPREAD_ID, 100 },
-                //{ MESS_FACTOR_ID, 100 },
+                { MESS_FACTOR_ID, 100 },
                 { RESTART_ON_LOSS_ID, 0 },
                 { RESTART_FROM_PREP_END_ID, 1 }
             };
@@ -369,6 +369,8 @@ namespace KitchenCustomDifficulty
                 -1,
                 fireSpread_ValList.ToArray(),
                 fireSpread_StrList.ToArray());
+
+            CreateIntOptionRow("Customer Mess Multiplier", MESS_FACTOR_ID, 0, 500, 25, false, true);
 
             CreateEnableDisableRow("Restart Chance Upon Loss", RESTART_ON_LOSS_ID, "On", "Off");
             CreateEnableDisableRow("Restart From End of Prep Phase", RESTART_FROM_PREP_END_ID);
