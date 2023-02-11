@@ -275,11 +275,11 @@ namespace KitchenCustomDifficulty
 
 
 
-            PrefManager.AddSubmenu("Customers", "customers");
+            PrefManager.AddSubmenu("Restaurant", "restaurant");
 
             CreateEnableDisableRow("Custom Group Count", PLAYER_CUSTOMERS_ENABLED_ID);
-            CreateIntOptionRow("Base Customer Count", BASE_PLAYER_CUSTOMERS_ID, 0, 500, 10, false, true);
-            CreateIntOptionRow("Customers Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 500, 10, false, true);
+            CreateIntOptionRow("Base Group Count", BASE_PLAYER_CUSTOMERS_ID, 0, 500, 10, false, true);
+            CreateIntOptionRow("Group Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 500, 10, false, true);
 
             PrefManager.AddSpacer();
 
