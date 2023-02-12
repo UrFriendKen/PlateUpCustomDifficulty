@@ -1,6 +1,6 @@
-﻿using Kitchen;
+﻿using HarmonyLib;
+using Kitchen;
 using KitchenCustomDifficulty.Preferences;
-using KitchenData;
 using KitchenLib;
 using KitchenMods;
 using System;
@@ -34,7 +34,7 @@ namespace KitchenCustomDifficulty
         public const string SHOP_UPGRADED_CHANCE_ID = "shopUpgradedChance";
         #endregion
 
-        #region Customer Preferences
+        #region Restaurant Preferences
         public const string PLAYER_CUSTOMERS_ENABLED_ID = "playerCustomersEnabled";
         public const string BASE_PLAYER_CUSTOMERS_ID = "basePlayerCustomers";
         public const string CUSTOMERS_PER_PLAYER_ID = "playerCustomerMultiplier";
@@ -44,9 +44,21 @@ namespace KitchenCustomDifficulty
         public const string PLAYER_PATIENCE_ENABLED_ID = "playerPatienceEnabled";
         public const string BASE_PLAYER_PATIENCE_ID = "basePlayerPatienceMultiplier";
         public const string PATIENCE_PER_PLAYER_ID = "playerPatienceMultiplier";
+
+        public const string PHASE_PATIENCE_ENABLED_ID = "phasePatienceEnabled";
+        public const string PATIENCE_QUEUE_CAP_ID = "patienceQueueCap";
+        public const string PATIENCE_QUEUE_ID = "patienceQueue";
+        public const string PATIENCE_QUEUE_BOOST_ID = "patienceQueueBoost";
+        public const string PATIENCE_SEATING_ID = "patienceSeating";
+        public const string PATIENCE_SERVICE_ID = "patienceService";
+        public const string PATIENCE_WAITFORFOOD_ID = "patienceWaitForFood";
+        public const string PATIENCE_DELIVERY_ID = "patienceDelivery";
+        public const string PATIENCE_DELIVERY_BOOST_ID = "patienceDeliveryBoost";
         #endregion
 
         #region Order Preferences
+        public const string ORDER_THINKING_ID = "orderThinking";
+        public const string ORDER_EATING_ID = "orderEating";
         public const string ORDER_STARTER_MODIFIER_ID = "starterModifier";
         public const string ORDER_SIDES_MODIFIER_ID = "sidesModifier";
         public const string ORDER_DESSERT_MODIFIER_ID = "dessertModifier";
@@ -181,6 +193,18 @@ namespace KitchenCustomDifficulty
                 { BASE_PLAYER_PATIENCE_ID, 75 },
                 { PATIENCE_PER_PLAYER_ID, 25 },
 
+                { PHASE_PATIENCE_ENABLED_ID, 0},
+                { PATIENCE_QUEUE_CAP_ID, 0 },
+                { PATIENCE_QUEUE_ID, 100 },
+                { PATIENCE_QUEUE_BOOST_ID, 100 },
+                { PATIENCE_SEATING_ID, 100 },
+                { PATIENCE_SERVICE_ID, 100 },
+                { PATIENCE_WAITFORFOOD_ID, 100},
+                { PATIENCE_DELIVERY_ID, 100 },
+                { PATIENCE_DELIVERY_BOOST_ID, 100 },
+
+                { ORDER_THINKING_ID, 100 },
+                { ORDER_EATING_ID, 100 },
                 { ORDER_STARTER_MODIFIER_ID, 100 },
                 { ORDER_SIDES_MODIFIER_ID, 100 },
                 { ORDER_DESSERT_MODIFIER_ID, 100 },
@@ -244,7 +268,7 @@ namespace KitchenCustomDifficulty
 
 
 
-
+            #region Shop Settings
             PrefManager.AddSubmenu("Shop", "shop");
 
             CreateIntOptionRow("Appliance Blueprint Count", SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 0, 20, 1, false, false);
@@ -258,48 +282,126 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
 
             PrefManager.SubmenuDone();
+            #endregion
 
 
-
-
+            #region Restaurant Settings
             PrefManager.AddSubmenu("Restaurant", "restaurant");
+            PrefManager.AddLabel("Restaurant");
+            PrefManager.AddSpacer();
 
+            #region --- Group Count
             PrefManager.AddSubmenu("Group Count", "groupCount");
             CreateEnableDisableRow("Custom Group Count", PLAYER_CUSTOMERS_ENABLED_ID);
-            CreateIntOptionRow("Base Group Count", BASE_PLAYER_CUSTOMERS_ID, 0, 500, 10, false, true);
-            CreateIntOptionRow("Group Multiplier Per Player", CUSTOMERS_PER_PLAYER_ID, 0, 500, 10, false, true);
+            List<int> groupCount_ValList = new List<int>();
+            List<string> groupCount_StrList = new List<string>();
+            int groupCountStepPercentage1 = 10;
+            for (int i = 0; i < (500 / groupCountStepPercentage1); i++)
+            {
+                int val = i * groupCountStepPercentage1;
+                groupCount_ValList.Add(val);
+                groupCount_StrList.Add($"{val}%");
+            }
+            int groupCountStepPercentage2 = 25;
+            for (int i = 0; i < (500 / groupCountStepPercentage2); i++)
+            {
+                int val = 500 + i * groupCountStepPercentage2;
+                groupCount_ValList.Add(val);
+                groupCount_StrList.Add($"{val}%");
+            }
+            int groupCountStepPercentage3 = 100;
+            for (int i = 0; i < (4000 / groupCountStepPercentage3) + 1; i++)
+            {
+                int val = 1000 + i * groupCountStepPercentage3;
+                groupCount_ValList.Add(val);
+                groupCount_StrList.Add($"{val}%");
+            }
+            PrefManager.AddLabel("Base Group Count");
+            PrefManager.AddOption<int>(
+                BASE_PLAYER_CUSTOMERS_ID,
+                "Base Group Count",
+                -1,
+                new int[] { -1 }.AddRangeToArray(groupCount_ValList.ToArray()),
+                new string[] { $"Default ({DefaultValuesDict[BASE_PLAYER_CUSTOMERS_ID]}%)" }.AddRangeToArray(groupCount_StrList.ToArray()));
+
+            PrefManager.AddLabel("Group Multiplier Per Player");
+            PrefManager.AddOption<int>(
+                CUSTOMERS_PER_PLAYER_ID,
+                "Group Multiplier Per Player",
+                -1,
+                new int[] { -1 }.AddRangeToArray(groupCount_ValList.ToArray()),
+                new string[] { $"Default ({DefaultValuesDict[CUSTOMERS_PER_PLAYER_ID]}%)" }.AddRangeToArray(groupCount_StrList.ToArray()));
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
+            #endregion
 
+            #region --- Patience
             PrefManager.AddSubmenu("Patience", "patience");
-            CreateEnableDisableRow("Custom Patience", PLAYER_PATIENCE_ENABLED_ID);
-            CreateIntOptionRow("Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
-            CreateIntOptionRow("Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
+            CreateEnableDisableRow("Custom Player Count Scaling", PLAYER_PATIENCE_ENABLED_ID);
+            CreateIntOptionRow("Total Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
+            CreateIntOptionRow("Total Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
+            PrefManager.AddSpacer();
+
+            #region ------ Phase Tuning
+            PrefManager.AddSubmenu("Phase Tuning", "phaseTuning");
+            CreateEnableDisableRow("Custom Phase Patience", PHASE_PATIENCE_ENABLED_ID);
+            PrefManager.AddSpacer();
+
+            CreateIntOptionRow("Seating Time", PATIENCE_SEATING_ID, 10, 500, 10, false, true);
+            CreateIntOptionRow("Service Time", PATIENCE_SERVICE_ID, 10, 500, 10, false, true);
+            CreateIntOptionRow("Wait for Food Time", PATIENCE_WAITFORFOOD_ID, 10, 500, 10, false, true);
+            CreateIntOptionRow("Delivery Time", PATIENCE_DELIVERY_ID, 10, 500, 10, false, true);
+            CreateIntOptionRow("Delivery Recovery", PATIENCE_DELIVERY_BOOST_ID, 0, 500, 10, false, true);
+
+            PrefManager.AddSpacer();    
+
+            #region --------- Queue Phase
+            PrefManager.AddSubmenu("Queue", "phaseQueue");
+            PrefManager.AddLabel("Queue Settings");
+            CreateIntOptionRow("Queue Time", PATIENCE_QUEUE_ID, 10, 500, 10, false, true);
+            CreateIntOptionRow("Queue Recovery", PATIENCE_QUEUE_BOOST_ID, 0, 500, 10, false, true);
+            PrefManager.AddInfo("PlateUp v1.1.2: \"Queue patience maximum decrease speed has been capped.\" Setting to Uncapped removes this helper.");
+            CreateEnableDisableRow("Queue Patience Cap", PATIENCE_QUEUE_CAP_ID, "Uncapped", "Vanilla");
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
+            #endregion
 
+            PrefManager.AddSpacer();
+            PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
+            #endregion
+
+            PrefManager.AddSpacer();
+            PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
+            #endregion
+
+            #region --- Orders
             PrefManager.AddSubmenu("Orders", "orders");
+            CreateIntOptionRow("Thinking Time", ORDER_THINKING_ID, 0, 300, 10, false, true);
+            CreateIntOptionRow("Eating Time", ORDER_EATING_ID, 0, 300, 10, false, true);
             CreateIntOptionRow("Starter Chance Multiplier", ORDER_STARTER_MODIFIER_ID, 0, 500, 25, false, true);
             CreateIntOptionRow("Sides Chance Multiplier", ORDER_SIDES_MODIFIER_ID, 0, 500, 25, false, true);
             CreateIntOptionRow("Dessert Chance Multiplier", ORDER_DESSERT_MODIFIER_ID, 0, 500, 25, false, true);
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
+            #endregion
 
+            PrefManager.AddSpacer();
 
             CreateIntOptionRow("Day Length Multiplier", DAY_LENGTH_ID, 10, 300, 10, true, true);
-
 
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
 
             PrefManager.SubmenuDone();
+            #endregion
 
 
-
-
+            #region Player Settings
             PrefManager.AddSubmenu("Player", "player");
 
             PrefManager.AddLabel("Prep - Player Collides With");
@@ -318,12 +420,11 @@ namespace KitchenCustomDifficulty
                 new int[] { -1, 0, 1, 2, 3 },
                 new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" });
 
-            CreateEnableDisableRow("Allow Go Out Of Bounds", PLAYER_OUT_OF_BOUNDS_ID);
-
             PrefManager.AddSpacer();
 
-            PrefManager.AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed.\n" +
-                "Set all of them to \"Mod Compatibility\" which allows the other mod to overwrite Custom Difficulty. Use with Caution.");
+            CreateEnableDisableRow("Allow Go Out Of Bounds", PLAYER_OUT_OF_BOUNDS_ID);
+            PrefManager.AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed.");
+            PrefManager.AddInfo("Set all of them to \"Mod Compatibility\" which allows the other mod to overwrite Custom Difficulty. Use with Caution.");
             CreateIntOptionRow("Prep - Player Speed Modifier", PLAYER_SPEED_PREP_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);
             CreateIntOptionRow("Day - Player Speed Modifier", PLAYER_SPEED_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);
 
@@ -331,10 +432,10 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
 
             PrefManager.SubmenuDone();
+            #endregion
 
 
-
-
+            #region Miscellaneous Settings
             PrefManager.AddSubmenu("Misc", "misc");
 
             List<int> fireSpread_ValList = new List<int>() { -1 };
@@ -377,6 +478,7 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
 
             PrefManager.SubmenuDone();
+            #endregion
 
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();

@@ -128,6 +128,7 @@
     <Compile Include="DayLengthController.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
     <Compile Include="GameDifficultySettingsController.cs" />
+    <Compile Include="Patches\PatienceValues_Patch.cs" />
     <Compile Include="Patches\OrderingValues_Patch.cs" />
     <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
     <Compile Include="Patches\StartNewDay_Patch.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Patches\DifficultyHelpers_Patch.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateQueuePatiencePastCap.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
