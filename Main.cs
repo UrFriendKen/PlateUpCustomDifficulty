@@ -54,6 +54,11 @@ namespace KitchenCustomDifficulty
         public const string PATIENCE_WAITFORFOOD_ID = "patienceWaitForFood";
         public const string PATIENCE_DELIVERY_ID = "patienceDelivery";
         public const string PATIENCE_DELIVERY_BOOST_ID = "patienceDeliveryBoost";
+
+        public const string DECORATION_EXCLUSIVE_ID = "decorationExclusive";
+        public const string DECORATION_AFFORDABLE_ID = "decorationAffordable";
+        public const string DECORATION_CHARMING_ID = "decorationCharming";
+        public const string DECORATION_FORMAL_ID = "decorationFormal";
         #endregion
 
         #region Order Preferences
@@ -202,6 +207,11 @@ namespace KitchenCustomDifficulty
                 { PATIENCE_WAITFORFOOD_ID, 100},
                 { PATIENCE_DELIVERY_ID, 100 },
                 { PATIENCE_DELIVERY_BOOST_ID, 100 },
+
+                { DECORATION_EXCLUSIVE_ID, 0 },
+                { DECORATION_AFFORDABLE_ID, 0 },
+                { DECORATION_CHARMING_ID, 0 },
+                { DECORATION_FORMAL_ID, 0 },
 
                 { ORDER_THINKING_ID, 100 },
                 { ORDER_EATING_ID, 100 },
@@ -388,6 +398,19 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
+            #endregion
+
+            #region --- Decoration
+            /*
+            PrefManager.AddSubmenu("Decoration", "decoration");
+            CreateIntOptionRow("Exclusive", DECORATION_EXCLUSIVE_ID, 1, 3, 1, true, false);
+            CreateIntOptionRow("Affordable", DECORATION_AFFORDABLE_ID, 1, 3, 1, true, false);
+            CreateIntOptionRow("Charming", DECORATION_CHARMING_ID, 1, 3, 1, true, false);
+            CreateIntOptionRow("Formal", DECORATION_FORMAL_ID, 1, 3, 1, true, false);
+            PrefManager.AddSpacer();
+            PrefManager.AddSpacer();
+            PrefManager.SubmenuDone();
+            */
             #endregion
 
             PrefManager.AddSpacer();

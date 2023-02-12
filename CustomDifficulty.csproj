@@ -128,6 +128,7 @@
     <Compile Include="DayLengthController.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
     <Compile Include="GameDifficultySettingsController.cs" />
+    <None Include="Patches\DecorationValues_Patch.cs" />
     <Compile Include="Patches\PatienceValues_Patch.cs" />
     <Compile Include="Patches\OrderingValues_Patch.cs" />
     <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
