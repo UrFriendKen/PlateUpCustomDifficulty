@@ -6,7 +6,6 @@ namespace KitchenCustomDifficulty.Patches
     [HarmonyPatch]
     internal static class PatienceValues_Patch
     {
-        //TODO Testing Phase Patience8
         [HarmonyPatch(typeof(PatienceValues), nameof(PatienceValues.Default), MethodType.Getter)]
         [HarmonyPostfix]
         public static void Default_Postfix(ref PatienceValues __result)
