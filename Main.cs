@@ -14,8 +14,6 @@ namespace KitchenCustomDifficulty
 {
     public class Main : BaseMod
     {
-        public struct CEndlessModeOfferRestart : IModComponent { }
-
         // guid must be unique and is recommended to be in reverse domain name notation
         // mod name that is displayed to the player and listed in the mods menu
         // mod version must follow semver e.g. "1.2.3"
@@ -121,32 +119,25 @@ namespace KitchenCustomDifficulty
         protected override void OnInitialise()
         {
             base.OnInitialise();
-            try
-            {
-                World.GetExistingSystem(typeof(Kitchen.CheckGameOverFromLife)).Enabled = false;
-            }
-            catch (NullReferenceException)
-            {
-                LogInfo("Could not disable system Kitchen.CheckGameOverFromLife!");
-            }
-            try
-            {
-                World.GetExistingSystem(typeof(Kitchen.DeterminePlayerSpeed)).Enabled = false;
-            }
-            catch (NullReferenceException)
-            {
-                LogInfo("Could not disable system Kitchen.DeterminePlayerSpeed!");
-            }
-            try
-            {
-                World.GetExistingSystem(typeof(Kitchen.EnforcePlayerBounds)).Enabled = false;
-            }
-            catch (NullReferenceException)
-            {
-                LogInfo("Could not disable system Kitchen.EnforcePlayerBounds!");
-            }
-
             LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
+            TrySetSystemEnabled<Kitchen.CheckGameOverFromLife>(false);
+            TrySetSystemEnabled<Kitchen.DeterminePlayerSpeed>(false);
+            TrySetSystemEnabled<Kitchen.EnforcePlayerBounds>(false);
+        }
+
+        private bool TrySetSystemEnabled<T>(bool isEnabled, bool logError = true) where T : GenericSystemBase
+        {
+            try
+            {
+                World.GetExistingSystem(typeof(T)).Enabled = isEnabled;
+                LogInfo($"{(isEnabled ? "Enabled" : "Disabled")} {typeof(T).FullName} system. Are you in Multiplayer?");
+                return true;
+            }
+            catch (NullReferenceException)
+            {
+                LogInfo($"Failed to {(isEnabled ? "enable" : "disable")} {typeof(T).FullName} system. Are you in Multiplayer?");
+                return false;
+            }
         }
 
         protected override void OnPostActivate(Mod mod)
