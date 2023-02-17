@@ -14,7 +14,6 @@ using UnityEngine;
 
 namespace KitchenCustomDifficulty.Preferences
 {
-    // TODO Check code to make sure deeper submenus work.
     internal class IntArrayGenerator
     {
         public delegate string IntToStringConversion (string prefKey, int value);

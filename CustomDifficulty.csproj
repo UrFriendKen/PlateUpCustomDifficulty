@@ -72,8 +72,9 @@
     <Reference Include="Kitchen.RestaurantMode">
       <HintPath>$(PlateUpGameFolder)\PlateUp_Data\Managed\Kitchen.RestaurantMode.dll</HintPath>
     </Reference>
-    <Reference Include="KitchenLib">
-      <HintPath>$(PlateUpGameFolder)\..\..\..\workshop\content\1599600\2898069883\KitchenLib-Workshop.dll</HintPath>
+    <Reference Include="KitchenLib-Workshop, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\workshop\content\1599600\2932799348\KitchenLib-Workshop.dll</HintPath>
     </Reference>
     <Reference Include="KitchenMode">
       <HintPath>$(PlateUpGameFolder)\PlateUp_Data\Managed\KitchenMode.dll</HintPath>
@@ -122,10 +123,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PlateUp\PlateUp\PlateUp_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\PlateUp\PlateUp\PlateUp_Data\Managed\UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CheckGameOverFromLife.cs" />
-    <Compile Include="DayLengthController.cs" />
+    <Compile Include="GroupCountController.cs" />
+    <Compile Include="TimeController.cs" />
     <Compile Include="EnforcePlayerBounds.cs" />
     <Compile Include="GameDifficultySettingsController.cs" />
     <None Include="Patches\DecorationValues_Patch.cs" />
@@ -134,7 +139,7 @@
     <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
     <Compile Include="Patches\StartNewDay_Patch.cs" />
     <Compile Include="DeterminePlayerSpeed.cs" />
-    <Compile Include="Helpers\MenuPreference.cs" />
+    <None Include="Helpers\MenuPreference.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\DifficultyHelpers_Patch.cs" />
     <Compile Include="Preferences\PreferencesManager.cs" />
