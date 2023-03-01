@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "0.4.1";
+        public const string MOD_VERSION = "0.4.3";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -36,6 +36,8 @@ namespace KitchenCustomDifficulty
         public const string PLAYER_CUSTOMERS_ENABLED_ID = "playerCustomersEnabled";
         public const string BASE_PLAYER_CUSTOMERS_ID = "basePlayerCustomers";
         public const string CUSTOMERS_PER_PLAYER_ID = "playerCustomerMultiplier";
+        public const string CUSTOMERS_MIN_GROUP_SIZE_ID = "minGroupSize";
+        public const string CUSTOMERS_MAX_GROUP_SIZE_ID = "maxGroupSize";
 
         public const string DAY_LENGTH_ID = "dayLength";
 
@@ -99,6 +101,7 @@ namespace KitchenCustomDifficulty
 
         #region Misc Preferences
         public const string FIRE_SPREAD_ID = "fireSpread";
+        public const string FIRE_SPREAD_THROUGH_WALLS_ID = "fireSpreadThroughWalls";
 
         public const string MESS_FACTOR_ID = "messFactor";
 
@@ -106,7 +109,7 @@ namespace KitchenCustomDifficulty
         public const string RESTART_FROM_PREP_END_ID = "restartFromPrepEnd";
         #endregion
 
-        internal static PreferencesManager PrefManager;
+        internal static ModPreferencesManager PrefManager;
         IntArrayGenerator IntArrayGen;
         IntArrayGenerator.IntToStringConversion ValueStringConversion;
         IntArrayGenerator.IntToStringConversion PercentStringConversion;
@@ -123,6 +126,7 @@ namespace KitchenCustomDifficulty
             TrySetSystemEnabled<Kitchen.CheckGameOverFromLife>(false);
             TrySetSystemEnabled<Kitchen.DeterminePlayerSpeed>(false);
             TrySetSystemEnabled<Kitchen.EnforcePlayerBounds>(false);
+            TrySetSystemEnabled<Kitchen.SpreadFire>(false);
         }
 
         private bool TrySetSystemEnabled<T>(bool isEnabled, bool logError = true) where T : GenericSystemBase
@@ -130,7 +134,7 @@ namespace KitchenCustomDifficulty
             try
             {
                 World.GetExistingSystem(typeof(T)).Enabled = isEnabled;
-                LogInfo($"{(isEnabled ? "Enabled" : "Disabled")} {typeof(T).FullName} system. Are you in Multiplayer?");
+                LogInfo($"{(isEnabled ? "Enabled" : "Disabled")} {typeof(T).FullName} system.");
                 return true;
             }
             catch (NullReferenceException)
@@ -147,7 +151,7 @@ namespace KitchenCustomDifficulty
 
         private void InitPreferences()
         {
-            PrefManager = new PreferencesManager(MOD_GUID, MOD_NAME);
+            PrefManager = new ModPreferencesManager(MOD_GUID, MOD_NAME);
             IntArrayGen = new IntArrayGenerator();
             ValueStringConversion = delegate (string prefKey, int i)
             {
@@ -184,6 +188,8 @@ namespace KitchenCustomDifficulty
                 { PLAYER_CUSTOMERS_ENABLED_ID, 0 },
                 { BASE_PLAYER_CUSTOMERS_ID, 80 },
                 { CUSTOMERS_PER_PLAYER_ID, 25 },
+                { CUSTOMERS_MIN_GROUP_SIZE_ID, 1 },
+                { CUSTOMERS_MAX_GROUP_SIZE_ID, 2 },
                 { DAY_LENGTH_ID, 100 },
                 { PLAYER_PATIENCE_ENABLED_ID, 0 },
                 { BASE_PLAYER_PATIENCE_ID, 75 },
@@ -221,6 +227,7 @@ namespace KitchenCustomDifficulty
 
 
                 { FIRE_SPREAD_ID, 100 },
+                { FIRE_SPREAD_THROUGH_WALLS_ID, 0 },
                 { MESS_FACTOR_ID, 100 },
                 { RESTART_ON_LOSS_ID, 0 },
                 { RESTART_FROM_PREP_END_ID, 1 }
@@ -332,6 +339,10 @@ namespace KitchenCustomDifficulty
                 -1,
                 new int[] { -1 }.AddRangeToArray(groupCount_ValList.ToArray()),
                 new string[] { $"Default ({DefaultValuesDict[CUSTOMERS_PER_PLAYER_ID]}%)" }.AddRangeToArray(groupCount_StrList.ToArray()));
+
+            PrefManager.AddSpacer();
+            CreateIntOptionRow("Min Group Size", CUSTOMERS_MIN_GROUP_SIZE_ID, 1, 100, 1, true, false);
+            CreateIntOptionRow("Max Group Size", CUSTOMERS_MAX_GROUP_SIZE_ID, 1, 100, 1, true, false);
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
@@ -483,6 +494,8 @@ namespace KitchenCustomDifficulty
                 fireSpread_ValList.ToArray(),
                 fireSpread_StrList.ToArray());
 
+            CreateEnableDisableRow("Fire Spread Through Walls", FIRE_SPREAD_THROUGH_WALLS_ID);
+
             CreateIntOptionRow("Customer Mess Multiplier", MESS_FACTOR_ID, 0, 500, 25, false, true);
 
             CreateEnableDisableRow("Restart Chance Upon Loss", RESTART_ON_LOSS_ID, "On", "Off");
@@ -498,7 +511,7 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
 
 
-            PrefManager.RegisterMenu(PreferencesManager.MenuType.PauseMenu);
+            PrefManager.RegisterMenu(ModPreferencesManager.MenuType.PauseMenu);
         }
 
         protected override void OnUpdate()
