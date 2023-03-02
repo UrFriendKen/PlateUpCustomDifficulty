@@ -8,10 +8,7 @@ namespace KitchenCustomDifficulty
     {
         private float? basePlayerSpeed;
         private float? basePlayerMass;
-        private float? mass;
         private static FieldInfo rigidbodyField;
-        private float updateMassProgress = 0f;
-        private float updateMassInterval = 0.5f;
 
         protected override void Initialise()
         {
@@ -21,9 +18,10 @@ namespace KitchenCustomDifficulty
 
         protected override void OnUpdate()
         {
-            float playerSpeedMultipler = Has<SIsNightTime>()? Main.PrefManager.Get<int>(Main.PLAYER_SPEED_PREP_ID) : Main.PrefManager.Get<int>(Main.PLAYER_SPEED_ID);
+            float playerSpeedMultiplier = Has<SIsNightTime>()? Main.PrefManager.Get<int>(Main.PLAYER_SPEED_PREP_ID) : Main.PrefManager.Get<int>(Main.PLAYER_SPEED_ID);
+            playerSpeedMultiplier = (playerSpeedMultiplier > -1) ? (playerSpeedMultiplier / 100f) : 1f;
 
-            if (playerSpeedMultipler != -2)
+            if (playerSpeedMultiplier != -2)
             {
                 foreach (PlayerView playerView in UnityEngine.Object.FindObjectsOfType<PlayerView>())
                 {
@@ -32,23 +30,15 @@ namespace KitchenCustomDifficulty
                         basePlayerSpeed = playerView.Speed;
                     }
 
-                    if (updateMassProgress > updateMassInterval || !mass.HasValue)
-                    {
-                        mass = ((Rigidbody)rigidbodyField.GetValue(playerView)).mass;
-                        updateMassProgress = 0f;
-                    }
-
+                    float mass = ((Rigidbody)rigidbodyField.GetValue(playerView)).mass;
                     if (!basePlayerMass.HasValue)
                     {
                         basePlayerMass = mass;
                     }
 
-                    playerSpeedMultipler = (playerSpeedMultipler > -1) ? (playerSpeedMultipler / 100f) : 1f;
-                    playerSpeedMultipler *= mass.Value / basePlayerMass.Value;
-                    playerView.Speed = playerSpeedMultipler * basePlayerSpeed.Value;
+                    playerView.Speed = playerSpeedMultiplier * mass / basePlayerMass.Value * basePlayerSpeed.Value;
                 }
             }
-            updateMassProgress += Time.DeltaTime;
 
             base.OnUpdate();
         }
