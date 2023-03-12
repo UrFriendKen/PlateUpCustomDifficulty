@@ -79,5 +79,11 @@ namespace KitchenCustomDifficulty
             instance._ResetKitchenParameters();
             usingCustom = false;
         }
+
+        public static void HandleVanillaParameterChange(ParameterEffect parameterEffect)
+        {
+            _cachedKitchenParameters = _cachedKitchenParameters.Add(parameterEffect.Parameters);
+            Main.LogInfo($"Max Group Size after HandleChange = {_cachedKitchenParameters.MaximumGroupSize}");
+        }
     }
 }
