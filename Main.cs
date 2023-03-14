@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "0.4.9";
+        public const string MOD_VERSION = "0.4.10";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -106,7 +106,6 @@ namespace KitchenCustomDifficulty
         public const string MESS_FACTOR_ID = "messFactor";
 
         public const string RESTART_ON_LOSS_ID = "offerRestartOnLoss";
-        public const string RESTART_FROM_PREP_END_ID = "restartFromPrepEnd";
         #endregion
 
         internal static ModPreferencesManager PrefManager;
@@ -229,8 +228,7 @@ namespace KitchenCustomDifficulty
                 { FIRE_SPREAD_ID, 100 },
                 { FIRE_SPREAD_THROUGH_WALLS_ID, 0 },
                 { MESS_FACTOR_ID, 100 },
-                { RESTART_ON_LOSS_ID, 0 },
-                { RESTART_FROM_PREP_END_ID, 1 }
+                { RESTART_ON_LOSS_ID, 0 }
             };
 
             CreatePreferences();
@@ -499,7 +497,6 @@ namespace KitchenCustomDifficulty
             CreateIntOptionRow("Customer Mess Multiplier", MESS_FACTOR_ID, 0, 500, 25, false, true);
 
             CreateEnableDisableRow("Restart Chance Upon Loss", RESTART_ON_LOSS_ID, "On", "Off");
-            CreateEnableDisableRow("Restart From End of Prep Phase", RESTART_FROM_PREP_END_ID);
 
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
