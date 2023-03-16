@@ -106,6 +106,8 @@ namespace KitchenCustomDifficulty
 
         public const string MESS_FACTOR_ID = "messFactor";
 
+        public const string CUSTOMER_SPEED_ID = "customerSpeed";
+
         public const string RESTART_ON_LOSS_ID = "offerRestartOnLoss";
         #endregion
 
@@ -230,6 +232,7 @@ namespace KitchenCustomDifficulty
                 { FIRE_SPREAD_ID, 100 },
                 { FIRE_SPREAD_THROUGH_WALLS_ID, 0 },
                 { MESS_FACTOR_ID, 100 },
+                { CUSTOMER_SPEED_ID, 100 },
                 { RESTART_ON_LOSS_ID, 0 }
             };
 
@@ -498,6 +501,8 @@ namespace KitchenCustomDifficulty
             CreateEnableDisableRow("Fire Spread Through Walls", FIRE_SPREAD_THROUGH_WALLS_ID);
 
             CreateIntOptionRow("Customer Mess Multiplier", MESS_FACTOR_ID, 0, 500, 25, false, true);
+
+            CreateIntOptionRow("Customer Walk Speed", CUSTOMER_SPEED_ID, 25, 500, 25, false, true);
 
             CreateEnableDisableRow("Restart Chance Upon Loss", RESTART_ON_LOSS_ID, "On", "Off");
 
