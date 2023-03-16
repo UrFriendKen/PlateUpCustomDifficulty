@@ -7,7 +7,18 @@ namespace KitchenCustomDifficulty.Patches
     [HarmonyPatch(typeof(DifficultyHelpers))]
     internal class DifficultyHelpers_Patch
     {
-        
+        [HarmonyPostfix]
+        [HarmonyPatch(nameof(DifficultyHelpers.CustomerChangePerPoint), MethodType.Getter)]
+        public static void CustomerChangePerPoint_Postfix(ref float __result)
+        {
+            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID).Value;
+
+            if (prefVal == -1)
+                __result = Main.DefaultValuesDict[Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID];
+            else
+                __result = (float)prefVal;
+        }
+
         [HarmonyPriority(200)]
         [HarmonyPostfix]
         [HarmonyPatch(nameof(DifficultyHelpers.TotalShopCount))]

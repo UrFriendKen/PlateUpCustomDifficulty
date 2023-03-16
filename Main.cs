@@ -38,6 +38,7 @@ namespace KitchenCustomDifficulty
         public const string CUSTOMERS_PER_PLAYER_ID = "playerCustomerMultiplier";
         public const string CUSTOMERS_MIN_GROUP_SIZE_ID = "minGroupSize";
         public const string CUSTOMERS_MAX_GROUP_SIZE_ID = "maxGroupSize";
+        public const string CARD_CUSTOMER_CHANGE_PER_POINT_ID = "cardCustomerChangePerPoint";
 
         public const string DAY_LENGTH_ID = "dayLength";
 
@@ -189,6 +190,7 @@ namespace KitchenCustomDifficulty
                 { CUSTOMERS_PER_PLAYER_ID, 25 },
                 { CUSTOMERS_MIN_GROUP_SIZE_ID, 1 },
                 { CUSTOMERS_MAX_GROUP_SIZE_ID, 2 },
+                { CARD_CUSTOMER_CHANGE_PER_POINT_ID, 15 },
                 { DAY_LENGTH_ID, 100 },
                 { PLAYER_PATIENCE_ENABLED_ID, 0 },
                 { BASE_PLAYER_PATIENCE_ID, 75 },
@@ -341,6 +343,7 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
             CreateIntOptionRow("Min Group Size", CUSTOMERS_MIN_GROUP_SIZE_ID, 1, 100, 1, true, false);
             CreateIntOptionRow("Max Group Size", CUSTOMERS_MAX_GROUP_SIZE_ID, 1, 100, 1, true, false);
+            CreateIntOptionRow("Card Customer Change Per Point", CARD_CUSTOMER_CHANGE_PER_POINT_ID, -100, 100, 5, false, true);
             PrefManager.AddSpacer();
             PrefManager.AddSpacer();
             PrefManager.SubmenuDone();
