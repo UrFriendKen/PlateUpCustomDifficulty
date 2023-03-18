@@ -8,7 +8,11 @@ namespace KitchenCustomDifficulty
     [UpdateInGroup(typeof(TimeManagementGroup))]
     internal class GroupSizeController : NightSystem
     {
-        private static KitchenParameters _cachedKitchenParameters;
+        private struct SCacheGroupSize : IComponentData
+        {
+            public int Min;
+            public int Max;
+        }
 
         private static bool usingCustom = false;
         private static GroupSizeController instance;
@@ -52,8 +56,12 @@ namespace KitchenCustomDifficulty
             if (Has<SKitchenParameters>())
             {
                 SKitchenParameters sKitchenParameters = GetOrDefault<SKitchenParameters>();
-                sKitchenParameters.Parameters = _cachedKitchenParameters;
-                Set(sKitchenParameters);
+                if (TryGetSingleton(out SCacheGroupSize cache))
+                {
+                    sKitchenParameters.Parameters.MinimumGroupSize = cache.Min;
+                    sKitchenParameters.Parameters.MaximumGroupSize = cache.Max;
+                    Set(sKitchenParameters);
+                }
             }
         }
 
@@ -62,9 +70,20 @@ namespace KitchenCustomDifficulty
             if (!usingCustom)
             {
                 SKitchenParameters sKitchenParameters = GetOrDefault<SKitchenParameters>();
-                _cachedKitchenParameters = sKitchenParameters.Parameters;
+                Set(new SCacheGroupSize
+                {
+                    Min = sKitchenParameters.Parameters.MinimumGroupSize,
+                    Max = sKitchenParameters.Parameters.MaximumGroupSize
+                });
             }
+        }
 
+        private void _UpdateCacheOnParameterChange(ParameterEffect parameterEffect)
+        {
+            SCacheGroupSize cache = GetOrDefault<SCacheGroupSize>();
+            cache.Min += parameterEffect.Parameters.MinimumGroupSize;
+            cache.Max += parameterEffect.Parameters.MaximumGroupSize;
+            Set(cache);
         }
 
         public static void UseCustomKitchenParameters()
@@ -82,8 +101,7 @@ namespace KitchenCustomDifficulty
 
         public static void HandleVanillaParameterChange(ParameterEffect parameterEffect)
         {
-            _cachedKitchenParameters = _cachedKitchenParameters.Add(parameterEffect.Parameters);
-            Main.LogInfo($"Max Group Size after HandleChange = {_cachedKitchenParameters.MaximumGroupSize}");
+            instance._UpdateCacheOnParameterChange(parameterEffect);
         }
     }
 }
