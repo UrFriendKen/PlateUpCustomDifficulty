@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "0.5.0";
+        public const string MOD_VERSION = "0.5.1";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -30,6 +30,7 @@ namespace KitchenCustomDifficulty
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
         public const string SHOP_STAPLE_BLUEPRINTS_ID = "shopStapleBlueprints";
         public const string SHOP_UPGRADED_CHANCE_ID = "shopUpgradedChance";
+        public const string DESK_AUTO_RESEARCH_ID = "deskAutoResearch";
         public const string DESK_AUTO_COPY_ID = "deskAutoCopy";
         public const string DESK_AUTO_MAKE_FREE_ID = "deskAutoMakeFree";
         #endregion
@@ -187,6 +188,7 @@ namespace KitchenCustomDifficulty
                 { SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 5 },
                 { SHOP_STAPLE_BLUEPRINTS_ID, 1 },
                 { SHOP_UPGRADED_CHANCE_ID, 30 },
+                { DESK_AUTO_RESEARCH_ID, 0 },
                 { DESK_AUTO_COPY_ID, 0 },
                 { DESK_AUTO_MAKE_FREE_ID, 0 },
                 //{ SHOP_INCREASE_REROLL_COST_ID, 10 },
@@ -292,6 +294,8 @@ namespace KitchenCustomDifficulty
             PrefManager.AddSpacer();
 
             CreateIntOptionRow("Upgraded Chance", SHOP_UPGRADED_CHANCE_ID, 0, 1000, 25, true, true);
+
+            CreateEnableDisableRow("Automatically Research", DESK_AUTO_RESEARCH_ID);
 
             CreateEnableDisableRow("Automatically Copy", DESK_AUTO_COPY_ID);
 
