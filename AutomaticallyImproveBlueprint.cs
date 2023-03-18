@@ -40,6 +40,7 @@ namespace KitchenCustomDifficulty
                 CDeskTarget target = targets[i];
                 CModifyBlueprintStoreAfterDuration improvement = improvements[i];
 
+                bool performed = false;
                 if (!Require(target.Target, out CBlueprintStore comp) || !comp.InUse ||
                     !this.Data.TryGet<Appliance>(comp.ApplianceID, out var output))
                 {
@@ -56,17 +57,20 @@ namespace KitchenCustomDifficulty
                     comp.ApplianceID = appliance.ID;
                     comp.BlueprintID = AssetReference.Blueprint;
                     comp.HasBeenUpgraded = true;
+                    performed = true;
                 }
                 if (!comp.HasBeenCopied && improvement.PerformCopy && Main.PrefManager.Get<int>(Main.DESK_AUTO_COPY_ID) == 1)
                 {
                     comp.HasBeenCopied = true;
+                    performed = true;
                 }
                 if (!comp.HasBeenMadeFree && improvement.MakeFree && Main.PrefManager.Get<int>(Main.DESK_AUTO_MAKE_FREE_ID) == 1)
                 {
                     comp.Price = Mathf.CeilToInt((float)comp.Price / 2f);
                     comp.HasBeenMadeFree = true;
+                    performed = true;
                 }
-                if (Require(target.Target, out CCabinetModifier comp2) && comp2.DisablesDeskAfterImprovement)
+                if (performed && Require(target.Target, out CCabinetModifier comp2) && comp2.DisablesDeskAfterImprovement)
                 {
                     Set<CIsBroken>(desk);
                 }
