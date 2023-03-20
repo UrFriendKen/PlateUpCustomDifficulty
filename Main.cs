@@ -295,13 +295,13 @@ namespace KitchenCustomDifficulty
                         .AddOption<int>(
                             CUSTOMERS_MIN_GROUP_SIZE_ID,
                             -2,
-                            GenerateIntArray("0|100", out strings, addValuesBefore: new int[] { -2, -1 }),
+                            GenerateIntArray("1|100", out strings, addValuesBefore: new int[] { -2, -1 }),
                             new string[] { "Vanilla", $"Default ({DefaultValuesDict[CUSTOMERS_MIN_GROUP_SIZE_ID]})" }.AddRangeToArray(strings))
                         .AddLabel("Max Group Size")
                         .AddOption<int>(
                             CUSTOMERS_MAX_GROUP_SIZE_ID,
                             -2,
-                            GenerateIntArray("0|100", out strings, addValuesBefore: new int[] { -2, -1 }),
+                            GenerateIntArray("1|100", out strings, addValuesBefore: new int[] { -2, -1 }),
                             new string[] { "Vanilla", $"Default ({DefaultValuesDict[CUSTOMERS_MAX_GROUP_SIZE_ID]})" }.AddRangeToArray(strings))
                         .AddLabel("Card Customer Change Per Point")
                         .AddOption<int>(
