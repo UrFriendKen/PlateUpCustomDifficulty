@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Kitchen;
-using KitchenLib.Utils;
 
 namespace KitchenCustomDifficulty.Patches
 {
@@ -11,7 +10,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.CustomerChangePerPoint), MethodType.Getter)]
         public static void CustomerChangePerPoint_Postfix(ref float __result)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID);
 
             if (prefVal == -1)
                 __result = Main.DefaultValuesDict[Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID];
@@ -24,7 +23,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.TotalShopCount))]
         public static void TotalShopCount_Postfix(ref int __result)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID);
 
             if (prefVal == -1)
                 __result = Main.DefaultValuesDict[Main.SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID];
@@ -37,7 +36,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.StapleCount))]
         public static void StapleCount_Postfix(ref int __result)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.SHOP_STAPLE_BLUEPRINTS_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.SHOP_STAPLE_BLUEPRINTS_ID);
 
             if (prefVal == -2)
                 return;
@@ -53,7 +52,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.BaseUpgradedShopChance))]
         public static void BaseUpgradedShopChance_Postfix(ref float __result)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.SHOP_UPGRADED_CHANCE_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.SHOP_UPGRADED_CHANCE_ID);
 
             if (prefVal == -2)
                 return;
@@ -70,7 +69,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.IncreasedRerollCost))]
         public static void IncreasedRerollCost_Postfix(ref int __result, int cost)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.SHOP_INCREASE_REROLL_COST_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.SHOP_INCREASE_REROLL_COST_ID);
 
             if (prefVal == -1)
                 __result = cost + Main.SHOP_INCREASE_REROLL_COST_INITIAL;
@@ -84,7 +83,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.FireSpreadModifier))]
         public static void FireSpreadModifier_Postfix(ref float __result)
         {
-            int prefVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.FIRE_SPREAD_ID).Value;
+            int prefVal = Main.PrefSysManager.Get<int>(Main.FIRE_SPREAD_ID);
 
             if (prefVal == -1)
                 __result = Main.DefaultValuesDict[Main.FIRE_SPREAD_ID]/100f;
@@ -99,7 +98,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.MoneyRewardPlayerModifier))]
         public static void MoneyRewardPlayerModifier_Postfix(ref float __result, int player_count)
         {
-            int isCustomCustomerCountOn = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.PLAYER_CUSTOMERS_ENABLED_ID).Value;
+            int isCustomCustomerCountOn = Main.PrefSysManager.Get<int>(Main.PLAYER_CUSTOMERS_ENABLED_ID);
             if (isCustomCustomerCountOn > -2)
             {
                 if (player_count == 1)
@@ -112,15 +111,15 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.CustomerPlayersRateModifier))]
         public static void CustomerPlayersRateModifier_Postfix(ref float __result, int player_count)
         {
-            int enabled = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.PLAYER_CUSTOMERS_ENABLED_ID).Value;
+            int enabled = Main.PrefSysManager.Get<int>(Main.PLAYER_CUSTOMERS_ENABLED_ID);
             if (enabled == 0)
                 return;
 
-            int multiplier = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.CUSTOMERS_PER_PLAYER_ID).Value;
+            int multiplier = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_PER_PLAYER_ID);
             if (multiplier == -1)
                 multiplier = Main.DefaultValuesDict[Main.CUSTOMERS_PER_PLAYER_ID];
 
-            int baseVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.BASE_PLAYER_CUSTOMERS_ID).Value;
+            int baseVal = Main.PrefSysManager.Get<int>(Main.BASE_PLAYER_CUSTOMERS_ID);
             if (baseVal == -1)
                 baseVal = Main.DefaultValuesDict[Main.BASE_PLAYER_CUSTOMERS_ID];
             
@@ -136,15 +135,15 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPatch(nameof(DifficultyHelpers.PatiencePlayerCountModifier))]
         public static void PatiencePlayerCountModifier_Postfix(ref float __result, int player_count)
         {
-            int enabled = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.PLAYER_PATIENCE_ENABLED_ID).Value;
+            int enabled = Main.PrefSysManager.Get<int>(Main.PLAYER_PATIENCE_ENABLED_ID);
             if (enabled == 0)
                 return;
 
-            int multiplier = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.PATIENCE_PER_PLAYER_ID).Value;
+            int multiplier = Main.PrefSysManager.Get<int>(Main.PATIENCE_PER_PLAYER_ID);
             if (multiplier == -1)
                 multiplier = Main.DefaultValuesDict[Main.PATIENCE_PER_PLAYER_ID];
 
-            int baseVal = PreferenceUtils.Get<KitchenLib.IntPreference>(Main.MOD_GUID, Main.BASE_PLAYER_PATIENCE_ID).Value;
+            int baseVal = Main.PrefSysManager.Get<int>(Main.BASE_PLAYER_PATIENCE_ID);
             if (baseVal == -1)
                 baseVal = Main.DefaultValuesDict[Main.BASE_PLAYER_PATIENCE_ID];
 
