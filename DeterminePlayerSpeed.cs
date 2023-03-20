@@ -18,7 +18,7 @@ namespace KitchenCustomDifficulty
 
         protected override void OnUpdate()
         {
-            float playerSpeedMultiplier = Has<SIsNightTime>()? Main.PrefManager.Get<int>(Main.PLAYER_SPEED_PREP_ID) : Main.PrefManager.Get<int>(Main.PLAYER_SPEED_ID);
+            float playerSpeedMultiplier = Has<SIsNightTime>()? Main.PrefSysManager.Get<int>(Main.PLAYER_SPEED_PREP_ID) : Main.PrefSysManager.Get<int>(Main.PLAYER_SPEED_ID);
             if (playerSpeedMultiplier != -2)
             {
                 playerSpeedMultiplier = (playerSpeedMultiplier > -1) ? (playerSpeedMultiplier / 100f) : 1f;

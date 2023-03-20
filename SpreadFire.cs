@@ -38,7 +38,7 @@ namespace KitchenCustomDifficulty
                     if (EntityManager.HasComponent<CAppliance>(primaryOccupant) && EntityManager.HasComponent<CIsInteractive>(primaryOccupant) &&
                         !EntityManager.HasComponent<CFireImmune>(primaryOccupant) && !EntityManager.HasComponent<CIsOnFire>(primaryOccupant))
                     {
-                        if (GetRoom(position) == room || Main.PrefManager.Get<int>(Main.FIRE_SPREAD_THROUGH_WALLS_ID) == 1)
+                        if (GetRoom(position) == room || Main.PrefSysManager.Get<int>(Main.FIRE_SPREAD_THROUGH_WALLS_ID) == 1)
                         {
                             double num = (EntityManager.HasComponent<CHighlyFlammable>(primaryOccupant) ? 0.1 : 0.02);
                             if ((double)Random.value < num * (double)dt * (double)player_factor)

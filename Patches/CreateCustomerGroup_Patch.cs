@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty.Patches
         {
             CCustomer customer = Main.instance.EntityManager.GetComponentData<CCustomer>(__result);
 
-            int multiplier = Main.PrefManager.Get<int>(Main.CUSTOMER_SPEED_ID);
+            int multiplier = Main.PrefSysManager.Get<int>(Main.CUSTOMER_SPEED_ID);
             if (multiplier == -1)
             {
                 customer.Speed *= Main.DefaultValuesDict[Main.CUSTOMER_SPEED_ID] / 100f;

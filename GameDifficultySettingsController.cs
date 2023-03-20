@@ -36,7 +36,7 @@ namespace KitchenCustomDifficulty
             GameData.Main.Difficulty.CustomerSideChance = _defaultValues.CustomerSideChance * GetMultiplier(Main.ORDER_SIDES_MODIFIER_ID);
             GameData.Main.Difficulty.GroupDessertChance = _defaultValues.GroupDessertChance * GetMultiplier(Main.ORDER_DESSERT_MODIFIER_ID);
 
-            if (Main.PrefManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 1)
+            if (Main.PrefSysManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 1)
             {
                 GameData.Main.Difficulty.QueuePatienceTime = _defaultValues.QueuePatienceTime * GetMultiplier(Main.PATIENCE_QUEUE_ID);
                 GameData.Main.Difficulty.QueuePatienceBoost = _defaultValues.QueuePatienceBoost * GetMultiplier(Main.PATIENCE_QUEUE_BOOST_ID);
@@ -45,7 +45,7 @@ namespace KitchenCustomDifficulty
 
         private float GetMultiplier(string preferenceID)
         {
-            float prefVal = Main.PrefManager.Get<int>(preferenceID);
+            float prefVal = Main.PrefSysManager.Get<int>(preferenceID);
             if (prefVal == -1)
             {
                 prefVal = Main.DefaultValuesDict[preferenceID];

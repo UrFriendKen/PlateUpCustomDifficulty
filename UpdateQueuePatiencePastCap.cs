@@ -22,8 +22,8 @@ namespace KitchenCustomDifficulty
         {
             if (Has<SCheatNoPatienceDecrease>() ||
                 HasStatus(RestaurantStatus.NoQueueReset) ||
-                Main.PrefManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 0 ||
-                Main.PrefManager.Get<int>(Main.PATIENCE_QUEUE_CAP_ID) == 0)
+                Main.PrefSysManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 0 ||
+                Main.PrefSysManager.Get<int>(Main.PATIENCE_QUEUE_CAP_ID) == 0)
             {
                 return;
             }

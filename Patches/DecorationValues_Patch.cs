@@ -39,7 +39,7 @@ namespace KitchenCustomDifficulty.Patches
 
         private static int GetValue(string preferenceID)
         {
-            int prefVal = Main.PrefManager.Get<int>(preferenceID);
+            int prefVal = Main.PrefSysManager.Get<int>(preferenceID);
             if (prefVal == -1)
             {
                 prefVal = Main.DefaultValuesDict[preferenceID];

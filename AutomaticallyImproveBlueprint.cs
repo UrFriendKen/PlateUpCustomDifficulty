@@ -46,7 +46,7 @@ namespace KitchenCustomDifficulty
                 {
                     continue;
                 }
-                if (improvement.PerformUpgrade && output.HasUpgrades && !comp.HasBeenUpgraded && Main.PrefManager.Get<int>(Main.DESK_AUTO_RESEARCH_ID) == 1)
+                if (improvement.PerformUpgrade && output.HasUpgrades && !comp.HasBeenUpgraded && Main.PrefSysManager.Get<int>(Main.DESK_AUTO_RESEARCH_ID) == 1)
                 {
                     Appliance appliance = Kitchen.RandomExtensions.Random(output.Upgrades);
                     comp.Price = Mathf.CeilToInt((float)appliance.PurchaseCost * blueprintCostMultiplier);
@@ -59,12 +59,12 @@ namespace KitchenCustomDifficulty
                     comp.HasBeenUpgraded = true;
                     performed = true;
                 }
-                if (!comp.HasBeenCopied && improvement.PerformCopy && Main.PrefManager.Get<int>(Main.DESK_AUTO_COPY_ID) == 1)
+                if (!comp.HasBeenCopied && improvement.PerformCopy && Main.PrefSysManager.Get<int>(Main.DESK_AUTO_COPY_ID) == 1)
                 {
                     comp.HasBeenCopied = true;
                     performed = true;
                 }
-                if (!comp.HasBeenMadeFree && improvement.MakeFree && Main.PrefManager.Get<int>(Main.DESK_AUTO_MAKE_FREE_ID) == 1)
+                if (!comp.HasBeenMadeFree && improvement.MakeFree && Main.PrefSysManager.Get<int>(Main.DESK_AUTO_MAKE_FREE_ID) == 1)
                 {
                     comp.Price = Mathf.CeilToInt((float)comp.Price / 2f);
                     comp.HasBeenMadeFree = true;

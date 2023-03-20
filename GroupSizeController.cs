@@ -32,9 +32,9 @@ namespace KitchenCustomDifficulty
             if (Has<SKitchenParameters>())
             {
                 SKitchenParameters sKitchenParameters = GetOrDefault<SKitchenParameters>();
-                int minGroupSize = Main.PrefManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID);
+                int minGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID);
                 int maxGroupSize = sKitchenParameters.Parameters.MaximumGroupSize;
-                int maxGroupSizePref = Main.PrefManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID);
+                int maxGroupSizePref = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID);
 
                 if (minGroupSize > -2)
                 {

@@ -10,7 +10,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPostfix]
         public static void Default_Postfix(ref OrderingValues __result)
         {
-            float messMultipler = Main.PrefManager.Get<int>(Main.MESS_FACTOR_ID);
+            float messMultipler = Main.PrefSysManager.Get<int>(Main.MESS_FACTOR_ID);
             if (messMultipler == -1)
             {
                 messMultipler = Main.DefaultValuesDict[Main.MESS_FACTOR_ID];

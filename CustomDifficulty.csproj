@@ -71,7 +71,6 @@
     <None Include="Helpers\MenuPreference.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\DifficultyHelpers_Patch.cs" />
-    <Compile Include="Preferences\ModPreferencesManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdateQueuePatiencePastCap.cs" />
   </ItemGroup>

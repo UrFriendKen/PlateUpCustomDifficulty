@@ -14,7 +14,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPostfix]
         public static void GetDayLength_Postfix(ref float __result)
         {
-            int multiplier = Main.PrefManager.Get<int>(Main.DAY_LENGTH_ID);
+            int multiplier = Main.PrefSysManager.Get<int>(Main.DAY_LENGTH_ID);
 
             if (multiplier == -2)
             {

@@ -51,11 +51,11 @@ namespace KitchenCustomDifficulty
 
             CustomerSettings customerSettings = new CustomerSettings
             {
-                Enabled = Main.PrefManager.Get<int>(Main.PLAYER_CUSTOMERS_ENABLED_ID),
-                BaseMultiplier = Main.PrefManager.Get<int>(Main.BASE_PLAYER_CUSTOMERS_ID),
-                PerPlayerMultiplier = Main.PrefManager.Get<int>(Main.CUSTOMERS_PER_PLAYER_ID),
-                MinGroupSize = Main.PrefManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID),
-                MaxGroupSize = Main.PrefManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID)
+                Enabled = Main.PrefSysManager.Get<int>(Main.PLAYER_CUSTOMERS_ENABLED_ID),
+                BaseMultiplier = Main.PrefSysManager.Get<int>(Main.BASE_PLAYER_CUSTOMERS_ID),
+                PerPlayerMultiplier = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_PER_PLAYER_ID),
+                MinGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID),
+                MaxGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID)
             };
 
             if (prevSettings.HasChanged(customerSettings))

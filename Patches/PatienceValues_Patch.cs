@@ -10,7 +10,7 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPostfix]
         public static void Default_Postfix(ref PatienceValues __result)
         {
-            if (Main.PrefManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 1)
+            if (Main.PrefSysManager.Get<int>(Main.PHASE_PATIENCE_ENABLED_ID) == 1)
             {
                 __result.Thinking *= GetMultiplier(Main.ORDER_THINKING_ID);
                 __result.Eating *= GetMultiplier(Main.ORDER_EATING_ID);
@@ -24,7 +24,7 @@ namespace KitchenCustomDifficulty.Patches
 
         private static float GetMultiplier(string preferenceID)
         {
-            float prefVal = Main.PrefManager.Get<int>(preferenceID);
+            float prefVal = Main.PrefSysManager.Get<int>(preferenceID);
             if (prefVal == -1)
             {
                 prefVal = Main.DefaultValuesDict[preferenceID];

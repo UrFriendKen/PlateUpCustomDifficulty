@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
 using Kitchen;
-using KitchenCustomDifficulty.Preferences;
 using KitchenLib;
 using KitchenMods;
+using PreferenceSystem;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "0.5.3";
+        public const string MOD_VERSION = "1.0.0";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -114,12 +114,10 @@ namespace KitchenCustomDifficulty
         public const string RESTART_ON_LOSS_ID = "offerRestartOnLoss";
         #endregion
 
-        internal static ModPreferencesManager PrefManager;
-        IntArrayGenerator IntArrayGen;
-        IntArrayGenerator.IntToStringConversion ValueStringConversion;
-        IntArrayGenerator.IntToStringConversion PercentStringConversion;
-
         public static Dictionary<string, int> DefaultValuesDict;
+
+
+        internal static PreferenceSystemManager PrefSysManager;
 
 
         public Main() : base(MOD_GUID, MOD_NAME, MOD_AUTHOR, MOD_VERSION, MOD_GAMEVERSION, Assembly.GetExecutingAssembly()) { }
@@ -151,38 +149,12 @@ namespace KitchenCustomDifficulty
 
         protected override void OnPostActivate(Mod mod)
         {
-            InitPreferences();
+            //InitPreferences();
+            CreatePreferencesNew();
         }
 
-        private void InitPreferences()
+        private void CreatePreferencesNew()
         {
-            PrefManager = new ModPreferencesManager(MOD_GUID, MOD_NAME);
-            IntArrayGen = new IntArrayGenerator();
-            ValueStringConversion = delegate (string prefKey, int i)
-            {
-                switch (i)
-                {
-                    case -2:
-                        return "Vanilla";
-                    case -1:
-                        return $"Default ({DefaultValuesDict[prefKey]})";
-                    default:
-                        return $"{i}";
-                }
-            };
-            PercentStringConversion = delegate (string prefKey, int i)
-            {
-                switch (i)
-                {
-                    case -2:
-                        return "Vanilla";
-                    case -1:
-                        return $"Default ({DefaultValuesDict[prefKey]}%)";
-                    default:
-                        return $"{i}%";
-                }
-            };
-
             DefaultValuesDict = new Dictionary<string, int>()
             {
                 { SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 5 },
@@ -242,293 +214,372 @@ namespace KitchenCustomDifficulty
                 { RESTART_ON_LOSS_ID, 0 }
             };
 
-            CreatePreferences();
+            PrefSysManager = new PreferenceSystemManager(MOD_GUID, MOD_NAME);
+            string[] strings;
+            PrefSysManager
+                .AddLabel("Custom Difficulty")
+                .AddSpacer()
+                .AddLabel("Selected Profile")
+                .AddProfileSelector()
+                .AddSpacer()
+                #region Shop
+                .AddSubmenu("Shop", "shop")
+                    .AddLabel("Appliance Blueprint Count")
+                    .AddOption<int>(
+                        SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID,
+                        -1,
+                        GenerateIntArray("1|20", out strings, addValuesBefore: new int[] { -1 }),
+                        new string[] { $"Default ({DefaultValuesDict[SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
+                    .AddLabel("Staple Appliance Blueprint Count")
+                    .AddOption<int>(
+                        SHOP_STAPLE_BLUEPRINTS_ID,
+                        -2,
+                        GenerateIntArray("0|5", out strings, addValuesBefore: new int[] { -2, -1 }),
+                        new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_STAPLE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
+                    .AddSpacer()
+                    .AddLabel("Upgraded Chance")
+                    .AddOption<int>(
+                        SHOP_UPGRADED_CHANCE_ID,
+                        -2,
+                        GenerateIntArray("0|1000|25", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
+                        new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_UPGRADED_CHANCE_ID]}%)" }.AddRangeToArray(strings))
+                    .AddSpacer()
+                    .AddLabel("Automatically Research")
+                    .AddOption<int>(
+                        DESK_AUTO_RESEARCH_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Disabled", "Enabled" })
+                    .AddLabel("Automatically Copy")
+                    .AddOption<int>(
+                        DESK_AUTO_COPY_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Disabled", "Enabled" })
+                    .AddLabel("Automatically Discount")
+                    .AddOption<int>(
+                        DESK_AUTO_MAKE_FREE_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Disabled", "Enabled" })
+                    .AddSpacer()
+                    .AddSpacer()
+                .SubmenuDone()
+            #endregion
+                #region Restaurant
+                .AddSubmenu("Restaurant", "restaurant")
+                    .AddLabel("Restaurant")
+                    .AddSpacer()
+                    #region Group Count
+                    .AddSubmenu("Group Count", "restaurant_groupCount")
+                        .AddLabel("Custom Group Count")
+                        .AddOption<int>(
+                            PLAYER_CUSTOMERS_ENABLED_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddLabel("Base Group Count")
+                        .AddOption<int>(
+                            BASE_PLAYER_CUSTOMERS_ID,
+                            -1,
+                            GenerateIntArray("0|490|10,500|975|25,1000|5000|100", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[BASE_PLAYER_CUSTOMERS_ID]}%)" }.AddRangeToArray(strings))
+                        .AddLabel("Group Multiplier Per Player")
+                        .AddOption<int>(
+                            CUSTOMERS_PER_PLAYER_ID,
+                            -1,
+                            GenerateIntArray("0|490|10,500|975|25,1000|5000|100", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[BASE_PLAYER_CUSTOMERS_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddLabel("Min Group Size")
+                        .AddOption<int>(
+                            CUSTOMERS_MIN_GROUP_SIZE_ID,
+                            -2,
+                            GenerateIntArray("0|100", out strings, addValuesBefore: new int[] { -2, -1 }),
+                            new string[] { "Vanilla", $"Default ({DefaultValuesDict[CUSTOMERS_MIN_GROUP_SIZE_ID]})" }.AddRangeToArray(strings))
+                        .AddLabel("Max Group Size")
+                        .AddOption<int>(
+                            CUSTOMERS_MAX_GROUP_SIZE_ID,
+                            -2,
+                            GenerateIntArray("0|100", out strings, addValuesBefore: new int[] { -2, -1 }),
+                            new string[] { "Vanilla", $"Default ({DefaultValuesDict[CUSTOMERS_MAX_GROUP_SIZE_ID]})" }.AddRangeToArray(strings))
+                        .AddLabel("Card Customer Change Per Point")
+                        .AddOption<int>(
+                            CARD_CUSTOMER_CHANGE_PER_POINT_ID,
+                            -1,
+                            GenerateIntArray("-100|100|5", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[CARD_CUSTOMER_CHANGE_PER_POINT_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+            #endregion
+                    #region Patience
+                    .AddSubmenu("Patience", "restaurant_patience")
+                        .AddLabel("Patience")
+                        .AddSpacer()
+                        .AddLabel("Custom Player Count Scaling")
+                        .AddOption<int>(
+                            PLAYER_PATIENCE_ENABLED_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddLabel("Total Base Patience Decay")
+                        .AddOption<int>(
+                            BASE_PLAYER_PATIENCE_ID,
+                            -1,
+                            GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[BASE_PLAYER_PATIENCE_ID]}%)" }.AddRangeToArray(strings))
+                        .AddLabel("Group Multiplier Per Player")
+                        .AddOption<int>(
+                            PATIENCE_PER_PLAYER_ID,
+                            -1,
+                            GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[PATIENCE_PER_PLAYER_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        #region Phase Tuning
+                        .AddSubmenu("Phase Tuning", "restaurant_patience_phaseTuning")
+                            .AddLabel("Custom Phase Patience")
+                            .AddOption<int>(
+                                PHASE_PATIENCE_ENABLED_ID,
+                                0,
+                                new int[] { 0, 1 },
+                                new string[] { "Disabled", "Enabled" })
+                            .AddSpacer()
+                            .AddLabel("Seating Time")
+                            .AddOption<int>(
+                                PATIENCE_SEATING_ID,
+                                -1,
+                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SEATING_ID]}%)" }.AddRangeToArray(strings))
+                            .AddLabel("Service Time")
+                            .AddOption<int>(
+                                PATIENCE_SERVICE_ID,
+                                -1,
+                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SERVICE_ID]}%)" }.AddRangeToArray(strings))
+                            .AddLabel("Wait For Food Time")
+                            .AddOption<int>(
+                                PATIENCE_WAITFORFOOD_ID,
+                                -1,
+                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_WAITFORFOOD_ID]}%)" }.AddRangeToArray(strings))
+                            .AddLabel("Delivery Time")
+                            .AddOption<int>(
+                                PATIENCE_DELIVERY_ID,
+                                -1,
+                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_DELIVERY_ID]}%)" }.AddRangeToArray(strings))
+                            .AddLabel("Delivery Recovery")
+                            .AddOption<int>(
+                                PATIENCE_DELIVERY_BOOST_ID,
+                                -1,
+                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_DELIVERY_BOOST_ID]}%)" }.AddRangeToArray(strings))
+                            .AddSpacer()
+                            #region Queue
+                            .AddSubmenu("Queue", "restaurant_patience_phaseTuning_queue")
+                                .AddLabel("Queue Time")
+                                .AddOption<int>(
+                                    PATIENCE_QUEUE_ID,
+                                    -1,
+                                    GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                    new string[] { $"Default ({DefaultValuesDict[PATIENCE_QUEUE_ID]}%)" }.AddRangeToArray(strings))
+                                .AddLabel("Queue Recovery")
+                                .AddOption<int>(
+                                    PATIENCE_QUEUE_BOOST_ID,
+                                    -1,
+                                    GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                                    new string[] { $"Default ({DefaultValuesDict[PATIENCE_QUEUE_BOOST_ID]}%)" }.AddRangeToArray(strings))
+                                .AddInfo("PlateUp v1.1.2: \"Queue patience maximum decrease speed has been capped.\" Setting to Uncapped removes this helper.")
+                                .AddLabel("Queue Patience Cap")
+                                .AddOption<int>(
+                                    PATIENCE_QUEUE_CAP_ID,
+                                    0,
+                                    new int[] { 0, 1 },
+                                    new string[] { "Vanilla", "Uncapped" })
+                                .AddSpacer()
+                                .AddSpacer()
+                            .SubmenuDone()
+                            #endregion
+                            .AddSpacer()
+                            .AddSpacer()
+                        .SubmenuDone()
+                        #endregion
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+            #endregion
+                    #region Orders
+                    .AddSubmenu("Orders", "restaurant_orders")
+                        .AddLabel("Orders")
+                        .AddSpacer()
+                        .AddLabel("Thinking Time")
+                        .AddOption<int>(
+                            ORDER_THINKING_ID,
+                            -1,
+                            GenerateIntArray("0|300|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[ORDER_THINKING_ID]}%)" }.AddRangeToArray(strings))
+                        .AddLabel("Eating Time")
+                        .AddOption<int>(
+                            ORDER_EATING_ID,
+                            -1,
+                            GenerateIntArray("0|300|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[ORDER_EATING_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddLabel("Starter Chance Multiplier")
+                        .AddOption<int>(
+                            ORDER_STARTER_MODIFIER_ID,
+                            -1,
+                            GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[ORDER_STARTER_MODIFIER_ID]}%)" }.AddRangeToArray(strings))
+                        .AddLabel("Sides Chance Multiplier")
+                        .AddOption<int>(
+                            ORDER_SIDES_MODIFIER_ID,
+                            -1,
+                            GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[ORDER_SIDES_MODIFIER_ID]}%)" }.AddRangeToArray(strings))
+                        .AddLabel("Dessert Chance Multiplier")
+                        .AddOption<int>(
+                            ORDER_DESSERT_MODIFIER_ID,
+                            -1,
+                            GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[ORDER_DESSERT_MODIFIER_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+                    #endregion
+                    .AddSpacer()
+                    .AddLabel("Day Length Multiplier")
+                    .AddOption<int>(
+                        DAY_LENGTH_ID,
+                        -2,
+                        GenerateIntArray("0|300|10", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
+                        new string[] { "Vanilla", $"Default ({DefaultValuesDict[DAY_LENGTH_ID]}%)" }.AddRangeToArray(strings))
+                    .AddSpacer()
+                    .AddSpacer()
+                .SubmenuDone()
+            #endregion
+                #region Player
+                .AddSubmenu("Player", "player")
+                    .AddLabel("Prep - Player Collides With")
+                    .AddOption<int>(
+                        PLAYER_COLLISION_PREP_ID,
+                        DefaultValuesDict[PLAYER_COLLISION_PREP_ID],
+                        new int[] { -1, 0, 1, 2, 3 },
+                        new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
+                    .AddLabel("Day - Player Collides With")
+                    .AddOption<int>(
+                        PLAYER_COLLISION_ID,
+                        DefaultValuesDict[PLAYER_COLLISION_ID],
+                        new int[] { -1, 0, 1, 2, 3 },
+                        new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
+                    .AddLabel("Allow Go Out of Bounds")
+                    .AddOption<int>(
+                        PLAYER_OUT_OF_BOUNDS_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Disabled", "Enabled" })
+                    .AddSpacer()
+                    .AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed.")
+                    .AddInfo("Set all of them to \"Mod Compatibility\" which allows the other mod to overwrite Custom Difficulty. Use with Caution.")
+                    .AddLabel("Prep - Player Speed Modifier")
+                    .AddOption<int>(
+                        PLAYER_SPEED_PREP_ID,
+                        -1,
+                        GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
+                        new string[] { "Mod Compatibility", $"Default ({DefaultValuesDict[PLAYER_SPEED_PREP_ID]}%)" }.AddRangeToArray(strings))
+                    .AddLabel("Day - Player Speed Modifier")
+                    .AddOption<int>(
+                        PLAYER_SPEED_ID,
+                        -1,
+                        GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
+                        new string[] { "Mod Compatibility", $"Default ({DefaultValuesDict[PLAYER_SPEED_ID]}%)" }.AddRangeToArray(strings))
+                    .AddSpacer()
+                    .AddSpacer()
+                .SubmenuDone()
+                #endregion
+                #region Misc
+                .AddSubmenu("Misc", "misc")
+                    .AddLabel("Fire Spread Modifier")
+                    .AddOption<int>(
+                        FIRE_SPREAD_ID,
+                        -1,
+                        GenerateIntArray("0|75|25,100|900|100,1000|10000|1000", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                        new string[] { $"Default ({DefaultValuesDict[FIRE_SPREAD_ID]}%)" }.AddRangeToArray(strings))
+                    .AddLabel("Fire Spread Through Walls")
+                    .AddOption<int>(
+                        FIRE_SPREAD_THROUGH_WALLS_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Disabled", "Enabled" })
+                    .AddLabel("Customer Mess Multiplier")
+                    .AddOption<int>(
+                        MESS_FACTOR_ID,
+                        -1,
+                        GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                        new string[] { $"Default ({DefaultValuesDict[MESS_FACTOR_ID]}%)" }.AddRangeToArray(strings))
+                    .AddLabel("Customer Walk Speed")
+                    .AddOption<int>(
+                        CUSTOMER_SPEED_ID,
+                        -1,
+                        GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                        new string[] { $"Default ({DefaultValuesDict[CUSTOMER_SPEED_ID]}%)" }.AddRangeToArray(strings))
+                    .AddLabel("Restart Chance Upon Loss")
+                    .AddOption<int>(
+                        RESTART_ON_LOSS_ID,
+                        0,
+                        new int[] { 0, 1 },
+                        new string[] { "Off", "On" })
+                    .AddSpacer()
+                    .AddSpacer()
+                .SubmenuDone()
+                #endregion
+                .AddSpacer()
+                .AddSpacer();
+
+            PrefSysManager.RegisterMenu(PreferenceSystemManager.MenuType.PauseMenu);
         }
 
-        private void CreateIntOptionRow(string labelText, string preferenceID, int minInclusive, int maxInclusive, int stepSize, bool giveDisabledOption, bool isPercent, string disabledOptionText = "Vanilla", int? startOptionOverride = null)
+        private int[] GenerateIntArray(string input, out string[] stringRepresentation, int[] addValuesBefore = null, int[] addValuesAfter = null, string prefix = "", string postfix = "")
         {
-            PrefManager.AddLabel(labelText);
-
-            IntArrayGen.Clear();
-            if (giveDisabledOption)
+            List<string> stringOutput = new List<string>();
+            List<int> output = new List<int>();
+            string[] ranges = input.Split(',');
+            foreach (string range in ranges)
             {
-                IntArrayGen.Add(-2, disabledOptionText);
+                string[] extents = range.Split('|');
+                int min = Convert.ToInt32(extents[0]);
+                int max;
+                int step;
+                switch (extents.Length)
+                {
+                    case 1:
+                        output.Add(min);
+                        stringOutput.Add($"{prefix}{min}{postfix}");
+                        continue;
+                    case 2:
+                        max = Convert.ToInt32(extents[1]);
+                        step = 1;
+                        break;
+                    case 3:
+                        max = Convert.ToInt32(extents[1]);
+                        step = Convert.ToInt32(extents[2]);
+                        break;
+                    default:
+                        continue;
+                }
+                for (int i = min; i <= max; i += step)
+                {
+                    output.Add(i);
+                    stringOutput.Add($"{prefix}{i}{postfix}");
+                }
             }
-            IntArrayGen.Add(-1, $"Default ({DefaultValuesDict[preferenceID]}{(isPercent ? "%" : "")})");
-            IntArrayGen.AddRange(minInclusive, maxInclusive, stepSize, preferenceID, isPercent? PercentStringConversion : ValueStringConversion);
-
-            int startingOption = startOptionOverride.HasValue ? startOptionOverride.Value : giveDisabledOption ? -2 : -1;
-            PrefManager.AddOption<int>(
-                preferenceID,
-                labelText,
-                startingOption,
-                IntArrayGen.GetArray(),
-                IntArrayGen.GetStrings());
-        }
-
-        private void CreateEnableDisableRow(string labelText, string preferenceID, string enabledText = "Enabled", string disabledText = "Disabled")
-        {
-            PrefManager.AddLabel(labelText);
-
-            PrefManager.AddOption<int>(
-                preferenceID,
-                labelText,
-                DefaultValuesDict[preferenceID] == 1? 1 : 0,
-                new int[] { 0, 1 },
-                new string[] { disabledText, enabledText });
-        }
-
-        private void CreatePreferences()
-        {
-            PrefManager.AddLabel("Custom Difficulty");
-            PrefManager.AddSpacer();
-
-
-
-            #region Shop Settings
-            PrefManager.AddSubmenu("Shop", "shop");
-
-            CreateIntOptionRow("Appliance Blueprint Count", SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 0, 20, 1, false, false);
-            CreateIntOptionRow("Staple Appliance Blueprint Count", SHOP_STAPLE_BLUEPRINTS_ID, 0, 6, 1, true, false);
-
-            PrefManager.AddSpacer();
-
-            CreateIntOptionRow("Upgraded Chance", SHOP_UPGRADED_CHANCE_ID, 0, 1000, 25, true, true);
-
-            CreateEnableDisableRow("Automatically Research", DESK_AUTO_RESEARCH_ID);
-
-            CreateEnableDisableRow("Automatically Copy", DESK_AUTO_COPY_ID);
-
-            CreateEnableDisableRow("Automatically Discount", DESK_AUTO_MAKE_FREE_ID);
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-
-            PrefManager.SubmenuDone();
-            #endregion
-
-
-            #region Restaurant Settings
-            PrefManager.AddSubmenu("Restaurant", "restaurant");
-            PrefManager.AddLabel("Restaurant");
-            PrefManager.AddSpacer();
-
-            #region --- Group Count
-            PrefManager.AddSubmenu("Group Count", "groupCount");
-            CreateEnableDisableRow("Custom Group Count", PLAYER_CUSTOMERS_ENABLED_ID);
-            List<int> groupCount_ValList = new List<int>();
-            List<string> groupCount_StrList = new List<string>();
-            int groupCountStepPercentage1 = 10;
-            for (int i = 0; i < (500 / groupCountStepPercentage1); i++)
-            {
-                int val = i * groupCountStepPercentage1;
-                groupCount_ValList.Add(val);
-                groupCount_StrList.Add($"{val}%");
-            }
-            int groupCountStepPercentage2 = 25;
-            for (int i = 0; i < (500 / groupCountStepPercentage2); i++)
-            {
-                int val = 500 + i * groupCountStepPercentage2;
-                groupCount_ValList.Add(val);
-                groupCount_StrList.Add($"{val}%");
-            }
-            int groupCountStepPercentage3 = 100;
-            for (int i = 0; i < (4000 / groupCountStepPercentage3) + 1; i++)
-            {
-                int val = 1000 + i * groupCountStepPercentage3;
-                groupCount_ValList.Add(val);
-                groupCount_StrList.Add($"{val}%");
-            }
-            PrefManager.AddLabel("Base Group Count");
-            PrefManager.AddOption<int>(
-                BASE_PLAYER_CUSTOMERS_ID,
-                "Base Group Count",
-                -1,
-                new int[] { -1 }.AddRangeToArray(groupCount_ValList.ToArray()),
-                new string[] { $"Default ({DefaultValuesDict[BASE_PLAYER_CUSTOMERS_ID]}%)" }.AddRangeToArray(groupCount_StrList.ToArray()));
-
-            PrefManager.AddLabel("Group Multiplier Per Player");
-            PrefManager.AddOption<int>(
-                CUSTOMERS_PER_PLAYER_ID,
-                "Group Multiplier Per Player",
-                -1,
-                new int[] { -1 }.AddRangeToArray(groupCount_ValList.ToArray()),
-                new string[] { $"Default ({DefaultValuesDict[CUSTOMERS_PER_PLAYER_ID]}%)" }.AddRangeToArray(groupCount_StrList.ToArray()));
-
-            PrefManager.AddSpacer();
-            CreateIntOptionRow("Min Group Size", CUSTOMERS_MIN_GROUP_SIZE_ID, 1, 100, 1, true, false);
-            CreateIntOptionRow("Max Group Size", CUSTOMERS_MAX_GROUP_SIZE_ID, 1, 100, 1, true, false);
-            CreateIntOptionRow("Card Customer Change Per Point", CARD_CUSTOMER_CHANGE_PER_POINT_ID, -100, 100, 5, false, true);
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            #endregion
-
-            #region --- Patience
-            PrefManager.AddSubmenu("Patience", "patience");
-            CreateEnableDisableRow("Custom Player Count Scaling", PLAYER_PATIENCE_ENABLED_ID);
-            CreateIntOptionRow("Total Base Patience Decay", BASE_PLAYER_PATIENCE_ID, 0, 500, 10, false, true);
-            CreateIntOptionRow("Total Patience Decay Per Player", PATIENCE_PER_PLAYER_ID, 0, 500, 10, false, true);
-            PrefManager.AddSpacer();
-
-            #region ------ Phase Tuning
-            PrefManager.AddSubmenu("Phase Tuning", "phaseTuning");
-            CreateEnableDisableRow("Custom Phase Patience", PHASE_PATIENCE_ENABLED_ID);
-            PrefManager.AddSpacer();
-
-            CreateIntOptionRow("Seating Time", PATIENCE_SEATING_ID, 10, 500, 10, false, true);
-            CreateIntOptionRow("Service Time", PATIENCE_SERVICE_ID, 10, 500, 10, false, true);
-            CreateIntOptionRow("Wait for Food Time", PATIENCE_WAITFORFOOD_ID, 10, 500, 10, false, true);
-            CreateIntOptionRow("Delivery Time", PATIENCE_DELIVERY_ID, 10, 500, 10, false, true);
-            CreateIntOptionRow("Delivery Recovery", PATIENCE_DELIVERY_BOOST_ID, 0, 500, 10, false, true);
-
-            PrefManager.AddSpacer();    
-
-            #region --------- Queue Phase
-            PrefManager.AddSubmenu("Queue", "phaseQueue");
-            PrefManager.AddLabel("Queue Settings");
-            CreateIntOptionRow("Queue Time", PATIENCE_QUEUE_ID, 10, 500, 10, false, true);
-            CreateIntOptionRow("Queue Recovery", PATIENCE_QUEUE_BOOST_ID, 0, 500, 10, false, true);
-            PrefManager.AddInfo("PlateUp v1.1.2: \"Queue patience maximum decrease speed has been capped.\" Setting to Uncapped removes this helper.");
-            CreateEnableDisableRow("Queue Patience Cap", PATIENCE_QUEUE_CAP_ID, "Uncapped", "Vanilla");
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            #endregion
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            #endregion
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            #endregion
-
-            #region --- Orders
-            PrefManager.AddSubmenu("Orders", "orders");
-            CreateIntOptionRow("Thinking Time", ORDER_THINKING_ID, 0, 300, 10, false, true);
-            CreateIntOptionRow("Eating Time", ORDER_EATING_ID, 0, 300, 10, false, true);
-            CreateIntOptionRow("Starter Chance Multiplier", ORDER_STARTER_MODIFIER_ID, 0, 500, 25, false, true);
-            CreateIntOptionRow("Sides Chance Multiplier", ORDER_SIDES_MODIFIER_ID, 0, 500, 25, false, true);
-            CreateIntOptionRow("Dessert Chance Multiplier", ORDER_DESSERT_MODIFIER_ID, 0, 500, 25, false, true);
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            #endregion
-
-            #region --- Decoration
-            /*
-            PrefManager.AddSubmenu("Decoration", "decoration");
-            CreateIntOptionRow("Exclusive", DECORATION_EXCLUSIVE_ID, 1, 3, 1, true, false);
-            CreateIntOptionRow("Affordable", DECORATION_AFFORDABLE_ID, 1, 3, 1, true, false);
-            CreateIntOptionRow("Charming", DECORATION_CHARMING_ID, 1, 3, 1, true, false);
-            CreateIntOptionRow("Formal", DECORATION_FORMAL_ID, 1, 3, 1, true, false);
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-            PrefManager.SubmenuDone();
-            */
-            #endregion
-
-            PrefManager.AddSpacer();
-
-            CreateIntOptionRow("Day Length Multiplier", DAY_LENGTH_ID, 10, 300, 10, true, true);
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-
-            PrefManager.SubmenuDone();
-            #endregion
-
-
-            #region Player Settings
-            PrefManager.AddSubmenu("Player", "player");
-
-            PrefManager.AddLabel("Prep - Player Collides With");
-            PrefManager.AddOption<int>(
-                PLAYER_COLLISION_PREP_ID,
-                "Prep - Player Collides With",
-                DefaultValuesDict[PLAYER_COLLISION_PREP_ID],
-                new int[] { -1, 0, 1, 2, 3 },
-                new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" });
-
-            PrefManager.AddLabel("Day - Player Collides With");
-            PrefManager.AddOption<int>(
-                PLAYER_COLLISION_ID,
-                "Day - Player Collides With",
-                DefaultValuesDict[PLAYER_COLLISION_ID],
-                new int[] { -1, 0, 1, 2, 3 },
-                new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" });
-
-            PrefManager.AddSpacer();
-
-            CreateEnableDisableRow("Allow Go Out Of Bounds", PLAYER_OUT_OF_BOUNDS_ID);
-            PrefManager.AddInfo("Note: The below settings may have undesired behaviour when used with other mods that affect player speed.");
-            PrefManager.AddInfo("Set all of them to \"Mod Compatibility\" which allows the other mod to overwrite Custom Difficulty. Use with Caution.");
-            CreateIntOptionRow("Prep - Player Speed Modifier", PLAYER_SPEED_PREP_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);
-            CreateIntOptionRow("Day - Player Speed Modifier", PLAYER_SPEED_ID, 0, 500, 25, true, true, "Mod Compatibility", startOptionOverride: -1);
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-
-            PrefManager.SubmenuDone();
-            #endregion
-
-
-            #region Miscellaneous Settings
-            PrefManager.AddSubmenu("Misc", "misc");
-
-            List<int> fireSpread_ValList = new List<int>() { -1 };
-            List<string> fireSpread_StrList = new List<string>() { $"Default (100%)" };
-            int fireSpreadStepPercentage1 = 25;
-            for (int i = 0; i < (100 / fireSpreadStepPercentage1); i++)
-            {
-                int val = i * fireSpreadStepPercentage1;
-                fireSpread_ValList.Add(val);
-                fireSpread_StrList.Add($"{val}%");
-            }
-            int fireSpreadStepPercentage2 = 100;
-            for (int i = 1; i < (1000 / fireSpreadStepPercentage2); i++)
-            {
-                int val = i * fireSpreadStepPercentage2;
-                fireSpread_ValList.Add(val);
-                fireSpread_StrList.Add($"{val}%");
-            }
-            int fireSpreadStepPercentage3 = 1000;
-            for (int i = 1; i < (10000 / fireSpreadStepPercentage3) + 1; i++)
-            {
-                int val = i * fireSpreadStepPercentage3;
-                fireSpread_ValList.Add(val);
-                fireSpread_StrList.Add($"{val}%");
-            }
-            PrefManager.AddLabel("Fire Spread Modifier");
-            PrefManager.AddOption<int>(
-                FIRE_SPREAD_ID,
-                "Fire Spread Modifier",
-                -1,
-                fireSpread_ValList.ToArray(),
-                fireSpread_StrList.ToArray());
-
-            CreateEnableDisableRow("Fire Spread Through Walls", FIRE_SPREAD_THROUGH_WALLS_ID);
-
-            CreateIntOptionRow("Customer Mess Multiplier", MESS_FACTOR_ID, 0, 500, 25, false, true);
-
-            CreateIntOptionRow("Customer Walk Speed", CUSTOMER_SPEED_ID, 25, 500, 25, false, true);
-
-            CreateEnableDisableRow("Restart Chance Upon Loss", RESTART_ON_LOSS_ID, "On", "Off");
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-
-            PrefManager.SubmenuDone();
-            #endregion
-
-            PrefManager.AddSpacer();
-            PrefManager.AddSpacer();
-
-
-            PrefManager.RegisterMenu(ModPreferencesManager.MenuType.PauseMenu);
+            stringRepresentation = stringOutput.ToArray();
+            if (addValuesBefore == null)
+                addValuesBefore = new int[0];
+            if (addValuesAfter == null)
+                addValuesAfter = new int[0];
+            return addValuesBefore.AddRangeToArray(output.ToArray()).AddRangeToArray(addValuesAfter);
         }
 
         protected override void OnUpdate()
@@ -541,11 +592,11 @@ namespace KitchenCustomDifficulty
             int ignoreCollisionThreshold;
             if (GameInfo.IsPreparationTime)
             {
-                ignoreCollisionThreshold = PrefManager.Get<int>(PLAYER_COLLISION_PREP_ID);
+                ignoreCollisionThreshold = PrefSysManager.Get<int>(PLAYER_COLLISION_PREP_ID);
             }
             else
             {
-                ignoreCollisionThreshold = PrefManager.Get<int>(PLAYER_COLLISION_ID);
+                ignoreCollisionThreshold = PrefSysManager.Get<int>(PLAYER_COLLISION_ID);
             }
             for (int i = 0; i < Layers.Length; i++)
             {
