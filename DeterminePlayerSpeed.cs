@@ -19,10 +19,9 @@ namespace KitchenCustomDifficulty
         protected override void OnUpdate()
         {
             float playerSpeedMultiplier = Has<SIsNightTime>()? Main.PrefManager.Get<int>(Main.PLAYER_SPEED_PREP_ID) : Main.PrefManager.Get<int>(Main.PLAYER_SPEED_ID);
-            playerSpeedMultiplier = (playerSpeedMultiplier > -1) ? (playerSpeedMultiplier / 100f) : 1f;
-
             if (playerSpeedMultiplier != -2)
             {
+                playerSpeedMultiplier = (playerSpeedMultiplier > -1) ? (playerSpeedMultiplier / 100f) : 1f;
                 foreach (PlayerView playerView in UnityEngine.Object.FindObjectsOfType<PlayerView>())
                 {
                     if (!basePlayerSpeed.HasValue)
