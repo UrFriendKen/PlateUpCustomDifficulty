@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.0.0";
+        public const string MOD_VERSION = "1.0.2";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -44,6 +44,7 @@ namespace KitchenCustomDifficulty
         public const string CARD_CUSTOMER_CHANGE_PER_POINT_ID = "cardCustomerChangePerPoint";
 
         public const string DAY_LENGTH_ID = "dayLength";
+        public const string WEATHER_ACTIVE_ID = "weatherActive";
 
         public const string PLAYER_PATIENCE_ENABLED_ID = "playerPatienceEnabled";
         public const string BASE_PLAYER_PATIENCE_ID = "basePlayerPatienceMultiplier";
@@ -172,6 +173,7 @@ namespace KitchenCustomDifficulty
                 { CUSTOMERS_MAX_GROUP_SIZE_ID, 2 },
                 { CARD_CUSTOMER_CHANGE_PER_POINT_ID, 15 },
                 { DAY_LENGTH_ID, 100 },
+                { WEATHER_ACTIVE_ID, -2 },
                 { PLAYER_PATIENCE_ENABLED_ID, 0 },
                 { BASE_PLAYER_PATIENCE_ID, 75 },
                 { PATIENCE_PER_PLAYER_ID, 25 },
@@ -221,8 +223,9 @@ namespace KitchenCustomDifficulty
                 .AddSpacer()
                 .AddLabel("Selected Profile")
                 .AddProfileSelector()
+                .AddDeleteProfileButton("Delete Profile")
                 .AddSpacer()
-                #region Shop
+            #region Shop
                 .AddSubmenu("Shop", "shop")
                     .AddLabel("Appliance Blueprint Count")
                     .AddOption<int>(
@@ -266,11 +269,11 @@ namespace KitchenCustomDifficulty
                     .AddSpacer()
                 .SubmenuDone()
             #endregion
-                #region Restaurant
+            #region Restaurant
                 .AddSubmenu("Restaurant", "restaurant")
                     .AddLabel("Restaurant")
                     .AddSpacer()
-                    #region Group Count
+            #region Group Count
                     .AddSubmenu("Group Count", "restaurant_groupCount")
                         .AddLabel("Custom Group Count")
                         .AddOption<int>(
@@ -313,7 +316,7 @@ namespace KitchenCustomDifficulty
                         .AddSpacer()
                     .SubmenuDone()
             #endregion
-                    #region Patience
+            #region Patience
                     .AddSubmenu("Patience", "restaurant_patience")
                         .AddLabel("Patience")
                         .AddSpacer()
@@ -336,7 +339,7 @@ namespace KitchenCustomDifficulty
                             GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
                             new string[] { $"Default ({DefaultValuesDict[PATIENCE_PER_PLAYER_ID]}%)" }.AddRangeToArray(strings))
                         .AddSpacer()
-                        #region Phase Tuning
+            #region Phase Tuning
                         .AddSubmenu("Phase Tuning", "restaurant_patience_phaseTuning")
                             .AddLabel("Custom Phase Patience")
                             .AddOption<int>(
@@ -376,7 +379,7 @@ namespace KitchenCustomDifficulty
                                 GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
                                 new string[] { $"Default ({DefaultValuesDict[PATIENCE_DELIVERY_BOOST_ID]}%)" }.AddRangeToArray(strings))
                             .AddSpacer()
-                            #region Queue
+            #region Queue
                             .AddSubmenu("Queue", "restaurant_patience_phaseTuning_queue")
                                 .AddLabel("Queue Time")
                                 .AddOption<int>(
@@ -400,16 +403,16 @@ namespace KitchenCustomDifficulty
                                 .AddSpacer()
                                 .AddSpacer()
                             .SubmenuDone()
-                            #endregion
+            #endregion
                             .AddSpacer()
                             .AddSpacer()
                         .SubmenuDone()
-                        #endregion
+            #endregion
                         .AddSpacer()
                         .AddSpacer()
                     .SubmenuDone()
             #endregion
-                    #region Orders
+            #region Orders
                     .AddSubmenu("Orders", "restaurant_orders")
                         .AddLabel("Orders")
                         .AddSpacer()
@@ -447,7 +450,7 @@ namespace KitchenCustomDifficulty
                         .AddSpacer()
                         .AddSpacer()
                     .SubmenuDone()
-                    #endregion
+            #endregion
                     .AddSpacer()
                     .AddLabel("Day Length Multiplier")
                     .AddOption<int>(
@@ -455,11 +458,17 @@ namespace KitchenCustomDifficulty
                         -2,
                         GenerateIntArray("0|300|10", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
                         new string[] { "Vanilla", $"Default ({DefaultValuesDict[DAY_LENGTH_ID]}%)" }.AddRangeToArray(strings))
+                    .AddLabel("Weather Active (Start of Day)")
+                    .AddOption<int>(
+                        WEATHER_ACTIVE_ID,
+                        -2,
+                        new int[] { -2, 0, 1 },
+                        new string[] { "Vanilla", "Disabled", "Enabled" })
                     .AddSpacer()
                     .AddSpacer()
                 .SubmenuDone()
             #endregion
-                #region Player
+            #region Player
                 .AddSubmenu("Player", "player")
                     .AddLabel("Prep - Player Collides With")
                     .AddOption<int>(
@@ -497,8 +506,8 @@ namespace KitchenCustomDifficulty
                     .AddSpacer()
                     .AddSpacer()
                 .SubmenuDone()
-                #endregion
-                #region Misc
+            #endregion
+            #region Misc
                 .AddSubmenu("Misc", "misc")
                     .AddLabel("Fire Spread Modifier")
                     .AddOption<int>(
@@ -533,7 +542,7 @@ namespace KitchenCustomDifficulty
                     .AddSpacer()
                     .AddSpacer()
                 .SubmenuDone()
-                #endregion
+            #endregion
                 .AddSpacer()
                 .AddSpacer();
 

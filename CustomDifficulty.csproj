@@ -54,6 +54,7 @@
     <Compile Include="CheckGameOverFromLife.cs" />
     <Compile Include="GroupSizeController.cs" />
     <Compile Include="GroupCountController.cs" />
+    <Compile Include="Patches\ActivateWeatherAtStartOfDay_Patch.cs" />
     <Compile Include="Patches\CreateCustomerGroup_Patch.cs" />
     <Compile Include="Patches\CreateCustomerSchedule_Patch.cs" />
     <Compile Include="Patches\GrantNecessaryAppliances_Patch.cs" />
@@ -68,7 +69,6 @@
     <Compile Include="Patches\OrderingValues_Patch.cs" />
     <Compile Include="Patches\ProgressionHelpers_Patch.cs" />
     <Compile Include="DeterminePlayerSpeed.cs" />
-    <None Include="Helpers\MenuPreference.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Patches\DifficultyHelpers_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,11 +79,11 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /Y "$(TargetDir)$(TargetName).dll" "$(TargetDir)..\..\WorkshopFolder\content\" /i</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="packages\Yariazen.PlateUp.ModBuildUtilities.1.6.16\build\Yariazen.PlateUp.ModBuildUtilities.targets" Condition="Exists('packages\Yariazen.PlateUp.ModBuildUtilities.1.6.16\build\Yariazen.PlateUp.ModBuildUtilities.targets')" />
+  <Import Project="packages\Yariazen.PlateUp.ModBuildUtilities.1.8.3\build\Yariazen.PlateUp.ModBuildUtilities.targets" Condition="Exists('packages\Yariazen.PlateUp.ModBuildUtilities.1.8.3\build\Yariazen.PlateUp.ModBuildUtilities.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Yariazen.PlateUp.ModBuildUtilities.1.6.16\build\Yariazen.PlateUp.ModBuildUtilities.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Yariazen.PlateUp.ModBuildUtilities.1.6.16\build\Yariazen.PlateUp.ModBuildUtilities.targets'))" />
+    <Error Condition="!Exists('packages\Yariazen.PlateUp.ModBuildUtilities.1.8.3\build\Yariazen.PlateUp.ModBuildUtilities.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Yariazen.PlateUp.ModBuildUtilities.1.8.3\build\Yariazen.PlateUp.ModBuildUtilities.targets'))" />
   </Target>
 </Project>
