@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.0.2";
+        public const string MOD_VERSION = "1.0.3";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -29,6 +29,7 @@ namespace KitchenCustomDifficulty
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
         public const string SHOP_STAPLE_BLUEPRINTS_ID = "shopStapleBlueprints";
+        public const string SHOP_COST_MULTIPLIER = "shopCostMultiplier";
         public const string SHOP_UPGRADED_CHANCE_ID = "shopUpgradedChance";
         public const string DESK_AUTO_RESEARCH_ID = "deskAutoResearch";
         public const string DESK_AUTO_COPY_ID = "deskAutoCopy";
@@ -160,6 +161,7 @@ namespace KitchenCustomDifficulty
             {
                 { SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID, 5 },
                 { SHOP_STAPLE_BLUEPRINTS_ID, 1 },
+                { SHOP_COST_MULTIPLIER, 100 },
                 { SHOP_UPGRADED_CHANCE_ID, 30 },
                 { DESK_AUTO_RESEARCH_ID, 0 },
                 { DESK_AUTO_COPY_ID, 0 },
@@ -239,6 +241,12 @@ namespace KitchenCustomDifficulty
                         -2,
                         GenerateIntArray("0|5", out strings, addValuesBefore: new int[] { -2, -1 }),
                         new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_STAPLE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
+                    .AddLabel("Blueprint Cost Multiplier")
+                    .AddOption<int>(
+                        SHOP_COST_MULTIPLIER,
+                        -1,
+                        GenerateIntArray("0|100|5", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                        new string[] { $"Default ({DefaultValuesDict[SHOP_COST_MULTIPLIER]})" }.AddRangeToArray(strings))
                     .AddSpacer()
                     .AddLabel("Upgraded Chance")
                     .AddOption<int>(
