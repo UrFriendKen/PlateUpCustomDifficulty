@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AutomaticallyImproveBlueprint.cs" />
     <Compile Include="CheckGameOverFromLife.cs" />
+    <Compile Include="ModifyRerollCost.cs" />
     <Compile Include="GroupSizeController.cs" />
     <Compile Include="GroupCountController.cs" />
     <Compile Include="Patches\ActivateWeatherAtStartOfDay_Patch.cs" />

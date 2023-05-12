@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.0.3";
+        public const string MOD_VERSION = "1.0.4";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -34,6 +34,9 @@ namespace KitchenCustomDifficulty
         public const string DESK_AUTO_RESEARCH_ID = "deskAutoResearch";
         public const string DESK_AUTO_COPY_ID = "deskAutoCopy";
         public const string DESK_AUTO_MAKE_FREE_ID = "deskAutoMakeFree";
+        public const string SHOP_BASE_REROLL_COST_ID = "shopBaseRerollCost";
+        public const string SHOP_REROLL_COST_INCREASE_ID = "shopRerollCostIncrease";
+        public const string SHOP_RESET_REROLL_COST_DAILY_ID = "shopResetRerollCostDaily";
         #endregion
 
         #region Restaurant Preferences
@@ -166,7 +169,8 @@ namespace KitchenCustomDifficulty
                 { DESK_AUTO_RESEARCH_ID, 0 },
                 { DESK_AUTO_COPY_ID, 0 },
                 { DESK_AUTO_MAKE_FREE_ID, 0 },
-                //{ SHOP_INCREASE_REROLL_COST_ID, 10 },
+                { SHOP_BASE_REROLL_COST_ID, 10 },
+                { SHOP_REROLL_COST_INCREASE_ID, 10 },
 
                 { PLAYER_CUSTOMERS_ENABLED_ID, 0 },
                 { BASE_PLAYER_CUSTOMERS_ID, 80 },
@@ -229,52 +233,87 @@ namespace KitchenCustomDifficulty
                 .AddSpacer()
             #region Shop
                 .AddSubmenu("Shop", "shop")
-                    .AddLabel("Appliance Blueprint Count")
-                    .AddOption<int>(
-                        SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID,
-                        -1,
-                        GenerateIntArray("1|20", out strings, addValuesBefore: new int[] { -1 }),
-                        new string[] { $"Default ({DefaultValuesDict[SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
-                    .AddLabel("Staple Appliance Blueprint Count")
-                    .AddOption<int>(
-                        SHOP_STAPLE_BLUEPRINTS_ID,
-                        -2,
-                        GenerateIntArray("0|5", out strings, addValuesBefore: new int[] { -2, -1 }),
-                        new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_STAPLE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
-                    .AddLabel("Blueprint Cost Multiplier")
-                    .AddOption<int>(
-                        SHOP_COST_MULTIPLIER,
-                        -1,
-                        GenerateIntArray("0|100|5", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                        new string[] { $"Default ({DefaultValuesDict[SHOP_COST_MULTIPLIER]})" }.AddRangeToArray(strings))
-                    .AddSpacer()
-                    .AddLabel("Upgraded Chance")
-                    .AddOption<int>(
-                        SHOP_UPGRADED_CHANCE_ID,
-                        -2,
-                        GenerateIntArray("0|1000|25", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
-                        new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_UPGRADED_CHANCE_ID]}%)" }.AddRangeToArray(strings))
-                    .AddSpacer()
-                    .AddLabel("Automatically Research")
-                    .AddOption<int>(
-                        DESK_AUTO_RESEARCH_ID,
-                        0,
-                        new int[] { 0, 1 },
-                        new string[] { "Disabled", "Enabled" })
-                    .AddLabel("Automatically Copy")
-                    .AddOption<int>(
-                        DESK_AUTO_COPY_ID,
-                        0,
-                        new int[] { 0, 1 },
-                        new string[] { "Disabled", "Enabled" })
-                    .AddLabel("Automatically Discount")
-                    .AddOption<int>(
-                        DESK_AUTO_MAKE_FREE_ID,
-                        0,
-                        new int[] { 0, 1 },
-                        new string[] { "Disabled", "Enabled" })
-                    .AddSpacer()
-                    .AddSpacer()
+                    .AddSubmenu("Blueprints", "shop_blueprints")
+                        .AddLabel("Total Appliance Blueprint Count")
+                        .AddOption<int>(
+                            SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID,
+                            -1,
+                            GenerateIntArray("1|20", out strings, addValuesBefore: new int[] { -1 }),
+                            new string[] { $"Default ({DefaultValuesDict[SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
+                        .AddLabel("Staple Appliance Blueprint Count")
+                        .AddOption<int>(
+                            SHOP_STAPLE_BLUEPRINTS_ID,
+                            -2,
+                            GenerateIntArray("0|5", out strings, addValuesBefore: new int[] { -2, -1 }),
+                            new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_STAPLE_BLUEPRINTS_ID]})" }.AddRangeToArray(strings))
+                        .AddLabel("Blueprint Cost Multiplier")
+                        .AddOption<int>(
+                            SHOP_COST_MULTIPLIER,
+                            -1,
+                            GenerateIntArray("0|100|5", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                            new string[] { $"Default ({DefaultValuesDict[SHOP_COST_MULTIPLIER]})" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddLabel("Upgraded Chance")
+                        .AddOption<int>(
+                            SHOP_UPGRADED_CHANCE_ID,
+                            -2,
+                            GenerateIntArray("0|1000|25", out strings, addValuesBefore: new int[] { -2, -1 }, postfix: "%"),
+                            new string[] { "Vanilla", $"Default ({DefaultValuesDict[SHOP_UPGRADED_CHANCE_ID]}%)" }.AddRangeToArray(strings))
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+                    .AddSubmenu("Desks", "shop_desks")
+                        .AddLabel("Automatically Research")
+                        .AddOption<int>(
+                            DESK_AUTO_RESEARCH_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddLabel("Automatically Copy")
+                        .AddOption<int>(
+                            DESK_AUTO_COPY_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddLabel("Automatically Discount")
+                        .AddOption<int>(
+                            DESK_AUTO_MAKE_FREE_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+                    .AddSubmenu("Reroll", "shop_reroll")
+                        .AddLabel("Base Reroll Cost")
+                        .AddOption<int>(
+                            SHOP_BASE_REROLL_COST_ID,
+                            -1,
+                            GenerateIntArray("0|1000|10", out strings, addValuesBefore: new int[] { -1 }),
+                            new string[] { $"Default ({DefaultValuesDict[SHOP_BASE_REROLL_COST_ID]})" }.AddRangeToArray(strings))
+                        //.AddLabel("Reroll Cost Increase")
+                        //.AddOption<int>(
+                        //    SHOP_REROLL_COST_INCREASE_ID,
+                        //    -1,
+                        //    GenerateIntArray("0|1000|10", out strings, addValuesBefore: new int[] { -1 }),
+                        //    new string[] { $"Default ({DefaultValuesDict[SHOP_REROLL_COST_INCREASE_ID]})" }.AddRangeToArray(strings))
+                        .AddLabel("Reset Reroll Cost")
+                        .AddOption<bool>(
+                            SHOP_RESET_REROLL_COST_DAILY_ID,
+                            false,
+                            new bool[] { false, true },
+                            new string[] { "Never", "Everyday" })
+                        .AddSpacer()
+                        .AddButton("Reset Reroll Cost Now",
+                            delegate(int _)
+                            {
+                                ModifyRerollCost.ResetNow();
+                            })
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
+                .AddSpacer()
+                .AddSpacer()
                 .SubmenuDone()
             #endregion
             #region Restaurant
