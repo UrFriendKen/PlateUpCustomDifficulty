@@ -113,6 +113,7 @@ namespace KitchenCustomDifficulty
         public const string FIRE_SPREAD_THROUGH_WALLS_ID = "fireSpreadThroughWalls";
 
         public const string MESS_FACTOR_ID = "messFactor";
+        //public const string MESS_REDUCES_NEARBY_PATIENCE_ID = "messReducesPatience";
 
         public const string CUSTOMER_SPEED_ID = "customerSpeed";
 
@@ -132,9 +133,10 @@ namespace KitchenCustomDifficulty
             base.OnInitialise();
             LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
             TrySetSystemEnabled<Kitchen.CheckGameOverFromLife>(false);
-            TrySetSystemEnabled<Kitchen.DeterminePlayerSpeed>(false);
-            TrySetSystemEnabled<Kitchen.EnforcePlayerBounds>(false);
-            TrySetSystemEnabled<Kitchen.SpreadFire>(false);
+        }
+
+        protected override void OnUpdate()
+        {
         }
 
         private bool TrySetSystemEnabled<T>(bool isEnabled, bool logError = true) where T : GenericSystemBase
@@ -156,6 +158,49 @@ namespace KitchenCustomDifficulty
         {
             //InitPreferences();
             CreatePreferencesNew();
+
+            //Events.BuildGameDataEvent += delegate (object _, BuildGameDataEventArgs args)
+            //{
+            //    Dictionary<int, float> messEffectPatienceModifierValues = new Dictionary<int, float>()
+            //    {
+            //        { ApplianceReferences.MessCustomer1, -0.05f },
+            //        { ApplianceReferences.MessCustomer2, -0.1f },
+            //        { ApplianceReferences.MessCustomer3, -0.15f },
+            //        { ApplianceReferences.MessKitchen1, -0.05f },
+            //        { ApplianceReferences.MessKitchen2, -0.1f },
+            //        { ApplianceReferences.MessKitchen3, -0.15f }
+            //    };
+
+            //    foreach (KeyValuePair<int, float> item in messEffectPatienceModifierValues)
+            //    {
+            //        if (!args.gamedata.TryGet(item.Key, out Appliance mess, warn_if_fail: true))
+            //            continue;
+
+            //        mess.EffectCondition = new CEffectPreferenceCondition(PrefSysManager, MESS_REDUCES_NEARBY_PATIENCE_ID)
+            //        {
+            //            ConditionWhenEnabled = CEffectPreferenceCondition.Condition.Always,
+            //            ConditionWhenDisabled = CEffectPreferenceCondition.Condition.Never
+            //        };
+            //        mess.EffectType = new CTableModifier() { PatienceModifiers = GetMessPatienceModifier(item.Value) };
+            //        mess.EffectRange = new CEffectRangeTiles()
+            //        {
+            //            Tiles = 2,
+            //            PassThroughWalls = false
+            //        };
+            //    }
+            //};
+
+            //PatienceValues GetMessPatienceModifier(float modifier)
+            //{
+            //    modifier = Mathf.Clamp(modifier, -1, 1);
+            //    return new PatienceValues()
+            //    {
+            //        Seating = modifier,
+            //        Service = modifier,
+            //        WaitForFood = modifier,
+            //        GetFoodDelivered = modifier
+            //    };
+            //}
         }
 
         private void CreatePreferencesNew()
@@ -574,6 +619,13 @@ namespace KitchenCustomDifficulty
                         -1,
                         GenerateIntArray("0|500|25", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
                         new string[] { $"Default ({DefaultValuesDict[MESS_FACTOR_ID]}%)" }.AddRangeToArray(strings))
+                    //.AddLabel("Mess Reduces Patience")
+                    //.AddInfo("Decreases 5% per level of mess nearby.")
+                    //.AddOption<bool>(
+                    //    MESS_REDUCES_NEARBY_PATIENCE_ID,
+                    //    false,
+                    //    new bool[] { false, true },
+                    //    new string[] { "Disabled", "Enabled" })
                     .AddLabel("Customer Walk Speed")
                     .AddOption<int>(
                         CUSTOMER_SPEED_ID,
@@ -636,29 +688,6 @@ namespace KitchenCustomDifficulty
             if (addValuesAfter == null)
                 addValuesAfter = new int[0];
             return addValuesBefore.AddRangeToArray(output.ToArray()).AddRangeToArray(addValuesAfter);
-        }
-
-        protected override void OnUpdate()
-        {
-            DoPlayerCollision();
-        }
-
-        private void DoPlayerCollision()
-        {
-            int ignoreCollisionThreshold;
-            if (GameInfo.IsPreparationTime)
-            {
-                ignoreCollisionThreshold = PrefSysManager.Get<int>(PLAYER_COLLISION_PREP_ID);
-            }
-            else
-            {
-                ignoreCollisionThreshold = PrefSysManager.Get<int>(PLAYER_COLLISION_ID);
-            }
-            for (int i = 0; i < Layers.Length; i++)
-            {
-                bool ignoreCollision = i <= ignoreCollisionThreshold;
-                Physics.IgnoreLayerCollision(PlayersLayer, Layers[i], ignore: ignoreCollision);
-            }
         }
 
         #region Logging
