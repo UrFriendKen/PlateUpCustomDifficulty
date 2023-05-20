@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.0.5";
+        public const string MOD_VERSION = "1.0.6";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -31,6 +31,7 @@ namespace KitchenCustomDifficulty
         public const string SHOP_STAPLE_BLUEPRINTS_ID = "shopStapleBlueprints";
         public const string SHOP_COST_MULTIPLIER = "shopCostMultiplier";
         public const string SHOP_UPGRADED_CHANCE_ID = "shopUpgradedChance";
+        public const string DESK_AUTO_PERFORM_TIME_ID = "deskAutoPerformTime";
         public const string DESK_AUTO_RESEARCH_ID = "deskAutoResearch";
         public const string DESK_AUTO_COPY_ID = "deskAutoCopy";
         public const string DESK_AUTO_MAKE_FREE_ID = "deskAutoMakeFree";
@@ -211,6 +212,7 @@ namespace KitchenCustomDifficulty
                 { SHOP_STAPLE_BLUEPRINTS_ID, 1 },
                 { SHOP_COST_MULTIPLIER, 100 },
                 { SHOP_UPGRADED_CHANCE_ID, 30 },
+                { DESK_AUTO_PERFORM_TIME_ID, 0 },
                 { DESK_AUTO_RESEARCH_ID, 0 },
                 { DESK_AUTO_COPY_ID, 0 },
                 { DESK_AUTO_MAKE_FREE_ID, 0 },
@@ -308,6 +310,12 @@ namespace KitchenCustomDifficulty
                         .AddSpacer()
                     .SubmenuDone()
                     .AddSubmenu("Desks", "shop_desks")
+                        .AddLabel("Perform At")
+                        .AddOption<int>(
+                            DESK_AUTO_PERFORM_TIME_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Start of Day", "End of Day" })
                         .AddLabel("Automatically Research")
                         .AddOption<int>(
                             DESK_AUTO_RESEARCH_ID,
