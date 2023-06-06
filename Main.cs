@@ -19,7 +19,7 @@ namespace KitchenCustomDifficulty
         // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.0.6";
+        public const string MOD_VERSION = "1.0.10";
         public const string MOD_AUTHOR = "IcedMilo";
         public const string MOD_GAMEVERSION = ">=1.1.1";
         // Game version this mod is designed for in semver
@@ -110,6 +110,7 @@ namespace KitchenCustomDifficulty
         #endregion
 
         #region Misc Preferences
+        public const string GAME_SPEED_ID = "gameSpeed";
         public const string FIRE_SPREAD_ID = "fireSpread";
         public const string FIRE_SPREAD_THROUGH_WALLS_ID = "fireSpreadThroughWalls";
 
@@ -261,7 +262,7 @@ namespace KitchenCustomDifficulty
                 { PLAYER_SPEED_ID , 100 },
                 { PLAYER_SPEED_PREP_ID , 100 },
 
-
+                { GAME_SPEED_ID, 100 },
                 { FIRE_SPREAD_ID, 100 },
                 { FIRE_SPREAD_THROUGH_WALLS_ID, 0 },
                 { MESS_FACTOR_ID, 100 },
@@ -452,26 +453,26 @@ namespace KitchenCustomDifficulty
                             .AddOption<int>(
                                 PATIENCE_SEATING_ID,
                                 -1,
-                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SEATING_ID]}%)" }.AddRangeToArray(strings))
+                                GenerateIntArray("10|500|10", out strings, addValuesBefore: new int[] { -1, int.MaxValue }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SEATING_ID]}%)", "Infinite" }.AddRangeToArray(strings))
                             .AddLabel("Service Time")
                             .AddOption<int>(
                                 PATIENCE_SERVICE_ID,
                                 -1,
-                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SERVICE_ID]}%)" }.AddRangeToArray(strings))
+                                GenerateIntArray("10|500|10", out strings, addValuesBefore: new int[] { -1, int.MaxValue }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_SERVICE_ID]}%)", "Infinite" }.AddRangeToArray(strings))
                             .AddLabel("Wait For Food Time")
                             .AddOption<int>(
                                 PATIENCE_WAITFORFOOD_ID,
                                 -1,
-                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_WAITFORFOOD_ID]}%)" }.AddRangeToArray(strings))
+                                GenerateIntArray("10|500|10", out strings, addValuesBefore: new int[] { -1, int.MaxValue }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_WAITFORFOOD_ID]}%)", "Infinite" }.AddRangeToArray(strings))
                             .AddLabel("Delivery Time")
                             .AddOption<int>(
                                 PATIENCE_DELIVERY_ID,
                                 -1,
-                                GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_DELIVERY_ID]}%)" }.AddRangeToArray(strings))
+                                GenerateIntArray("10|500|10", out strings, addValuesBefore: new int[] { -1, int.MaxValue }, postfix: "%"),
+                                new string[] { $"Default ({DefaultValuesDict[PATIENCE_DELIVERY_ID]}%)", "Infinite" }.AddRangeToArray(strings))
                             .AddLabel("Delivery Recovery")
                             .AddOption<int>(
                                 PATIENCE_DELIVERY_BOOST_ID,
@@ -485,8 +486,8 @@ namespace KitchenCustomDifficulty
                                 .AddOption<int>(
                                     PATIENCE_QUEUE_ID,
                                     -1,
-                                    GenerateIntArray("0|500|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
-                                    new string[] { $"Default ({DefaultValuesDict[PATIENCE_QUEUE_ID]}%)" }.AddRangeToArray(strings))
+                                    GenerateIntArray("10|500|10", out strings, addValuesBefore: new int[] { -1, int.MaxValue }, postfix: "%"),
+                                    new string[] { $"Default ({DefaultValuesDict[PATIENCE_QUEUE_ID]}%)", "Infinite" }.AddRangeToArray(strings))
                                 .AddLabel("Queue Recovery")
                                 .AddOption<int>(
                                     PATIENCE_QUEUE_BOOST_ID,
@@ -609,6 +610,13 @@ namespace KitchenCustomDifficulty
             #endregion
             #region Misc
                 .AddSubmenu("Misc", "misc")
+                    .AddLabel("Game Speed")
+                    .AddInfo("Manually adjust player/customer walk speed.")
+                    .AddOption<int>(
+                        GAME_SPEED_ID,
+                        -1,
+                        GenerateIntArray("0|1000|10", out strings, addValuesBefore: new int[] { -1 }, postfix: "%"),
+                        new string[] { $"Default ({DefaultValuesDict[GAME_SPEED_ID]}%)" }.AddRangeToArray(strings))
                     .AddLabel("Fire Spread Modifier")
                     .AddOption<int>(
                         FIRE_SPREAD_ID,
@@ -619,8 +627,8 @@ namespace KitchenCustomDifficulty
                     .AddOption<int>(
                         FIRE_SPREAD_THROUGH_WALLS_ID,
                         0,
-                        new int[] { 0, 1 },
-                        new string[] { "Disabled", "Enabled" })
+                        new int[] { 0, 1, 2 },
+                        new string[] { "Disabled", "Hatches and Doors", "Hatches, Doors, and Walls" })
                     .AddLabel("Customer Mess Multiplier")
                     .AddOption<int>(
                         MESS_FACTOR_ID,

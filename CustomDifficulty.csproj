@@ -61,6 +61,7 @@
     <Compile Include="Patches\EnforcePlayerBounds_Patch.cs" />
     <Compile Include="Patches\GrantNecessaryAppliances_Patch.cs" />
     <Compile Include="Patches\HandleNewParameterChange_Patch.cs" />
+    <Compile Include="ScaleTime.cs" />
     <Compile Include="ShopController.cs" />
     <Compile Include="SpreadFireOverWall.cs" />
     <Compile Include="TimeController.cs" />

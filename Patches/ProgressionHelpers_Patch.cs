@@ -22,7 +22,12 @@ namespace KitchenCustomDifficulty.Patches
             }
             else if (multiplier == -1)
             {
-                __result *= Main.DefaultValuesDict[Main.DAY_LENGTH_ID] / 100f;
+                multiplier = Main.DefaultValuesDict[Main.DAY_LENGTH_ID];
+            }
+            
+            if (multiplier == 0)
+            {
+                __result = float.Epsilon;
             }
             else
             {

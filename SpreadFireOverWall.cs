@@ -23,8 +23,10 @@ namespace KitchenCustomDifficulty
             NativeArray<Entity> appliancesOnFire = AppliancesOnFire.ToEntityArray(Allocator.Temp);
             NativeArray<CPosition> appliancesOnFirePosition = AppliancesOnFire.ToComponentDataArray<CPosition>(Allocator.Temp);
 
-            if (Main.PrefSysManager.Get<int>(Main.FIRE_SPREAD_THROUGH_WALLS_ID) == 1)
+            int prefValue = Main.PrefSysManager.Get<int>(Main.FIRE_SPREAD_THROUGH_WALLS_ID);
+            if (prefValue > 0)
             {
+                bool ignoreWalls = prefValue == 2;
                 float dt = Time.DeltaTime;
                 float player_factor = DifficultyHelpers.FireSpreadModifier(Players.CalculateEntityCount());
 
@@ -41,7 +43,7 @@ namespace KitchenCustomDifficulty
                         if (EntityManager.HasComponent<CAppliance>(primaryOccupant) && EntityManager.HasComponent<CIsInteractive>(primaryOccupant) &&
                             !EntityManager.HasComponent<CFireImmune>(primaryOccupant) && !EntityManager.HasComponent<CIsOnFire>(primaryOccupant) && GetRoom(position) != room)
                         {
-                            if (CanReach(pos, position))
+                            if (ignoreWalls || CanReach(pos, position))
                             {
                                 double num = (EntityManager.HasComponent<CHighlyFlammable>(primaryOccupant) ? 0.1 : 0.02);
                                 if ((double)Random.value < num * (double)dt * (double)player_factor)
