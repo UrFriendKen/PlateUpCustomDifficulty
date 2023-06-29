@@ -1,30 +1,19 @@
 ﻿using HarmonyLib;
-using Kitchen;
-using KitchenLib;
 using KitchenMods;
 using PreferenceSystem;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Unity.Entities;
 using UnityEngine;
 
 // Namespace should have "Kitchen" in the beginning
 namespace KitchenCustomDifficulty
 {
-    public class Main : BaseMod
+    public class Main : IModInitializer
     {
-        // guid must be unique and is recommended to be in reverse domain name notation
-        // mod name that is displayed to the player and listed in the mods menu
-        // mod version must follow semver e.g. "1.2.3"
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
         public const string MOD_VERSION = "1.0.10";
-        public const string MOD_AUTHOR = "IcedMilo";
-        public const string MOD_GAMEVERSION = ">=1.1.1";
-        // Game version this mod is designed for in semver
-        // e.g. ">=1.1.1" current and all future
-        // e.g. ">=1.1.1 <=1.2.3" for all from/until
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
@@ -124,39 +113,27 @@ namespace KitchenCustomDifficulty
 
         public static Dictionary<string, int> DefaultValuesDict;
 
-
         internal static PreferenceSystemManager PrefSysManager;
 
+        private Harmony _harmonyInstance;
+        private List<Assembly> PatchedAssemblies = new List<Assembly>();
 
-        public Main() : base(MOD_GUID, MOD_NAME, MOD_AUTHOR, MOD_VERSION, MOD_GAMEVERSION, Assembly.GetExecutingAssembly()) { }
 
-        protected override void OnInitialise()
+        public Main()
         {
-            base.OnInitialise();
-            LogWarning($"{MOD_GUID} v{MOD_VERSION} in use!");
-            TrySetSystemEnabled<Kitchen.CheckGameOverFromLife>(false);
-        }
-
-        protected override void OnUpdate()
-        {
-        }
-
-        private bool TrySetSystemEnabled<T>(bool isEnabled, bool logError = true) where T : GenericSystemBase
-        {
-            try
+            if (_harmonyInstance == null)
             {
-                World.GetExistingSystem(typeof(T)).Enabled = isEnabled;
-                LogInfo($"{(isEnabled ? "Enabled" : "Disabled")} {typeof(T).FullName} system.");
-                return true;
+                _harmonyInstance = new Harmony(MOD_GUID);
             }
-            catch (NullReferenceException)
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            if (assembly != null && !PatchedAssemblies.Contains(assembly))
             {
-                LogInfo($"Failed to {(isEnabled ? "enable" : "disable")} {typeof(T).FullName} system. Are you in Multiplayer?");
-                return false;
+                _harmonyInstance.PatchAll(assembly);
+                PatchedAssemblies.Add(assembly);
             }
         }
 
-        protected override void OnPostActivate(Mod mod)
+        public void PostActivate(Mod mod)
         {
             //InitPreferences();
             CreatePreferencesNew();
@@ -204,6 +181,10 @@ namespace KitchenCustomDifficulty
             //    };
             //}
         }
+
+        public void PreInject() { }
+
+        public void PostInject() { }
 
         private void CreatePreferencesNew()
         {

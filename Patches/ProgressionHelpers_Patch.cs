@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Kitchen;
-using KitchenLib.Utils;
 using System.Reflection;
 
 namespace KitchenCustomDifficulty.Patches
@@ -8,7 +7,7 @@ namespace KitchenCustomDifficulty.Patches
     [HarmonyPatch]
     internal static class ProgressionHelpers_Patch
     {
-        private static MethodInfo mProgressionSetDayLengthOnUpdate = ReflectionUtils.GetMethod<ProgressionSetDayLength>("OnUpdate", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static MethodInfo mProgressionSetDayLengthOnUpdate = typeof(ProgressionSetDayLength).GetMethod("OnUpdate", BindingFlags.NonPublic | BindingFlags.Instance);
 
         [HarmonyPatch(typeof(ProgressionHelpers), nameof(ProgressionHelpers.GetDayLength))]
         [HarmonyPostfix]
