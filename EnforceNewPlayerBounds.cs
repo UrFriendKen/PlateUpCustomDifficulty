@@ -7,6 +7,7 @@ using static Kitchen.EnforcePlayerBounds;
 
 namespace KitchenCustomDifficulty
 {
+    [UpdateBefore(typeof(EnforcePlayerBounds))]
     public class EnforceNewPlayerBounds : RestaurantSystem
     {
         private const float BOUNDS_OFFSET = 0.65f;
@@ -58,26 +59,13 @@ namespace KitchenCustomDifficulty
                 Entity entity = entities[i];
                 CPosition position = positions[i];
 
-                bool isInBounds = !NewBounds.Contains(position.Position);
-                if (!isInBounds)
-                {
-                    CLayoutRoomTile tile = GetTile(position);
-                    foreach (CRoomMarker oob_room in outOfBoundsRooms)
-                    {
-                        if (tile.RoomID == oob_room.RoomID)
-                        {
-                            isInBounds = true;
-                            break;
-                        }
-                    }
-                }
-                if (isInBounds)
+                bool isOutOfBounds = !NewBounds.Contains(position.Position);
+                if (isOutOfBounds)
                 {
                     position.Position = GetNearestInBoundsPosition(position);
                     position.ForceSnap = true;
+                    Set(entity, position);
                 }
-
-                Set(entity, position);
             }
 
             entities.Dispose();

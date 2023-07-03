@@ -9,7 +9,6 @@ namespace KitchenCustomDifficulty.Patches
         [HarmonyPrefix]
         static bool OnUpdate_Prefix()
         {
-            Main.LogError("CheckGameOverFromLife disabled");
             return false;
         }
     }
