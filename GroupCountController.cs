@@ -17,6 +17,7 @@ namespace KitchenCustomDifficulty
             public int PerPlayerMultiplier;
             public int MinGroupSize;
             public int MaxGroupSize;
+            public int CustomerChangePerPoint;
 
             public bool HasChanged(CustomerSettings other)
             {
@@ -25,7 +26,8 @@ namespace KitchenCustomDifficulty
                     BaseMultiplier != other.BaseMultiplier ||
                     PerPlayerMultiplier != other.BaseMultiplier ||
                     MinGroupSize != other.MinGroupSize ||
-                    MaxGroupSize != other.MaxGroupSize;
+                    MaxGroupSize != other.MaxGroupSize ||
+                    CustomerChangePerPoint != other.CustomerChangePerPoint;
             }
         }
 
@@ -55,7 +57,8 @@ namespace KitchenCustomDifficulty
                 BaseMultiplier = Main.PrefSysManager.Get<int>(Main.BASE_PLAYER_CUSTOMERS_ID),
                 PerPlayerMultiplier = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_PER_PLAYER_ID),
                 MinGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID),
-                MaxGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID)
+                MaxGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID),
+                CustomerChangePerPoint = Main.PrefSysManager.Get<int>(Main.CARD_CUSTOMER_CHANGE_PER_POINT_ID)
             };
 
             if (prevSettings.HasChanged(customerSettings))

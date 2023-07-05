@@ -52,12 +52,12 @@
   <ItemGroup>
     <Compile Include="AutomaticallyImproveBlueprint.cs" />
     <Compile Include="CheckGameOverFromLife.cs" />
+    <Compile Include="DisableSystems.cs" />
     <Compile Include="ModifyRerollCost.cs" />
     <Compile Include="GroupSizeController.cs" />
     <Compile Include="GroupCountController.cs" />
     <Compile Include="PatchController.cs" />
     <Compile Include="Patches\ActivateWeatherAtStartOfDay_Patch.cs" />
-    <Compile Include="Patches\CheckGameOverFromLife_Patch.cs" />
     <Compile Include="Patches\CreateCustomerGroup_Patch.cs" />
     <Compile Include="Patches\CreateCustomerSchedule_Patch.cs" />
     <Compile Include="Patches\EnforcePlayerBounds_Patch.cs" />

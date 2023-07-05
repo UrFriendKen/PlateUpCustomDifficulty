@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty
     {
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.1.2";
+        public const string MOD_VERSION = "1.1.3";
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
