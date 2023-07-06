@@ -105,6 +105,11 @@ namespace KitchenCustomDifficulty.Views
 
         protected override void UpdateData(ViewData data)
         {
+            CollideWithLayers = data.CollidesWith;
+        }
+
+        public void Update()
+        {
             if (_layers == null)
             {
                 _layers = new Dictionary<PhysicsLayer, int>()
@@ -116,7 +121,6 @@ namespace KitchenCustomDifficulty.Views
                 };
             }
 
-            CollideWithLayers = data.CollidesWith;
             foreach (KeyValuePair<PhysicsLayer, int> layer in _layers)
             {
                 Physics.IgnoreLayerCollision(_layers[PhysicsLayer.Players], layer.Value, !CollideWithLayers.HasFlag(layer.Key));
