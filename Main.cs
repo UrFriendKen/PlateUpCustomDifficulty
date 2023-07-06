@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty
     {
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.1.4";
+        public const string MOD_VERSION = "1.1.5";
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
@@ -556,14 +556,14 @@ namespace KitchenCustomDifficulty
                     .AddOption<int>(
                         PLAYER_COLLISION_PREP_ID,
                         DefaultValuesDict[PLAYER_COLLISION_PREP_ID],
-                        new int[] { -1, 0, 1, 2, 3 },
-                        new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
+                        new int[] { -2, -1, 0, 1, 2, 3 },
+                        new string[] { "Mod Compatibility", "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
                     .AddLabel("Day - Player Collides With")
                     .AddOption<int>(
                         PLAYER_COLLISION_ID,
                         DefaultValuesDict[PLAYER_COLLISION_ID],
-                        new int[] { -1, 0, 1, 2, 3 },
-                        new string[] { "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
+                        new int[] { -2, -1, 0, 1, 2, 3 },
+                        new string[] { "Mod Compatibility", "Everything", "Everything except players", "Appliances and Walls Only", "Walls Only", "Nothing" })
                     .AddLabel("Allow Go Out of Bounds")
                     .AddOption<int>(
                         PLAYER_OUT_OF_BOUNDS_ID,

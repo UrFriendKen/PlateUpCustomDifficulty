@@ -1,6 +1,7 @@
 ﻿using Kitchen;
 using MessagePack;
 using System.Collections.Generic;
+using TwitchLib.Api.Core.Models.Undocumented.ChannelPanels;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -50,13 +51,16 @@ namespace KitchenCustomDifficulty.Views
 
                 int prefValue = GameInfo.IsPreparationTime ? Main.PrefSysManager.Get<int>(Main.PLAYER_COLLISION_PREP_ID) : Main.PrefSysManager.Get<int>(Main.PLAYER_COLLISION_ID);
 
-                PhysicsLayer collidesWith = GameInfo.CurrentScene == SceneType.Kitchen ? _preferenceMap[prefValue] : PhysicsLayer.All;
+                bool isEnabled = prefValue > -2;
+
+                PhysicsLayer collidesWith = (GameInfo.CurrentScene == SceneType.Kitchen && isEnabled) ? _preferenceMap[prefValue] : PhysicsLayer.All;
 
                 for (int i = 0; i < views.Length; i++)
                 {
                     SendUpdate(views[i], new ViewData()
                     {
-                        CollidesWith = collidesWith
+                        CollidesWith = collidesWith,
+                        IsEnabled = isEnabled
                     });
                 }
 
@@ -67,7 +71,8 @@ namespace KitchenCustomDifficulty.Views
         [MessagePackObject(false)]
         public class ViewData : ISpecificViewData, IViewData.ICheckForChanges<ViewData>
         {
-            [Key(0)]public PhysicsLayer CollidesWith;
+            [Key(0)] public PhysicsLayer CollidesWith;
+            [Key(1)] public bool IsEnabled;
 
             public IUpdatableObject GetRelevantSubview(IObjectView view)
             {
@@ -102,28 +107,32 @@ namespace KitchenCustomDifficulty.Views
         public static Dictionary<PhysicsLayer, int> LayerMasks => new Dictionary<PhysicsLayer, int>(_layers); 
 
         public PhysicsLayer CollideWithLayers { get; protected set; } = PhysicsLayer.None;
-
+        public bool IsEnabled = true;
         protected override void UpdateData(ViewData data)
         {
             CollideWithLayers = data.CollidesWith;
+            IsEnabled = data.IsEnabled;
         }
 
         public void Update()
         {
-            if (_layers == null)
+            if (IsEnabled)
             {
-                _layers = new Dictionary<PhysicsLayer, int>()
+                if (_layers == null)
+                {
+                    _layers = new Dictionary<PhysicsLayer, int>()
                 {
                     { PhysicsLayer.Players, LayerMask.NameToLayer("Players") },
                     { PhysicsLayer.Customers, LayerMask.NameToLayer("Customers") },
                     { PhysicsLayer.Appliances, LayerMask.NameToLayer("Default") },
                     { PhysicsLayer.Walls, LayerMask.NameToLayer("Statics") }
                 };
-            }
+                }
 
-            foreach (KeyValuePair<PhysicsLayer, int> layer in _layers)
-            {
-                Physics.IgnoreLayerCollision(_layers[PhysicsLayer.Players], layer.Value, !CollideWithLayers.HasFlag(layer.Key));
+                foreach (KeyValuePair<PhysicsLayer, int> layer in _layers)
+                {
+                    Physics.IgnoreLayerCollision(_layers[PhysicsLayer.Players], layer.Value, !CollideWithLayers.HasFlag(layer.Key));
+                }
             }
         }
     }
