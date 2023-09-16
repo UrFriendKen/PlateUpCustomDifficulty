@@ -53,6 +53,7 @@
     <Compile Include="AutomaticallyImproveBlueprint.cs" />
     <Compile Include="CheckGameOverFromLife.cs" />
     <Compile Include="DisableSystems.cs" />
+    <Compile Include="HandleCheats.cs" />
     <Compile Include="ModifyRerollCost.cs" />
     <Compile Include="GroupSizeController.cs" />
     <Compile Include="GroupCountController.cs" />

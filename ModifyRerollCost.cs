@@ -24,15 +24,17 @@ namespace KitchenCustomDifficulty
             SResetRerollCostDaily resetCost = GetOrCreate<SResetRerollCostDaily>();
 
             resetCost.IsActive = Main.PrefSysManager.Get<bool>(Main.SHOP_RESET_REROLL_COST_DAILY_ID);
-            if (Has<SIsDayTime>() || _isResetNow)
+            if (Has<SIsDayTime>())
             {
+                if (!resetCost.IsResetForDay)
+                    return;
                 resetCost.IsResetForDay = false;
-                _isResetNow = false;
             }
             else
             {
-                if (resetCost.IsActive && !resetCost.IsResetForDay)
+                if (_isResetNow || (resetCost.IsActive && !resetCost.IsResetForDay))
                 {
+                    _isResetNow = false;
                     if (Require(out SRerollCost rerollCost))
                     {
                         int baseRerollCost = Main.PrefSysManager.Get<int>(Main.SHOP_BASE_REROLL_COST_ID);

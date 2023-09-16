@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty
     {
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.1.5";
+        public const string MOD_VERSION = "1.1.7";
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
@@ -109,6 +109,10 @@ namespace KitchenCustomDifficulty
         public const string CUSTOMER_SPEED_ID = "customerSpeed";
 
         public const string RESTART_ON_LOSS_ID = "offerRestartOnLoss";
+
+        public const string CHEAT_NO_LOSING_ID = "cheatNoLosing";
+        public const string CHEAT_NO_PATIENCE_DECREASE_ID = "cheatNoPatienceDecrease";
+        public const string CHEAT_INSTANT_PROCESSES_ID = "cheatInstantProcesses";
         #endregion
 
         public static Dictionary<string, int> DefaultValuesDict;
@@ -340,7 +344,7 @@ namespace KitchenCustomDifficulty
                             new string[] { "Never", "Everyday" })
                         .AddSpacer()
                         .AddButton("Reset Reroll Cost Now",
-                            delegate(int _)
+                            delegate (int _)
                             {
                                 ModifyRerollCost.ResetNow();
                             })
@@ -635,6 +639,23 @@ namespace KitchenCustomDifficulty
                         0,
                         new int[] { 0, 1 },
                         new string[] { "Off", "On" })
+                    .AddSpacer()
+                    .AddSubmenu("Cheat", "misc_cheat")
+                        .AddLabel("No Losing")
+                        .AddOption<int>(
+                            CHEAT_NO_LOSING_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Off", "On" })
+                        .AddLabel("Instant Processes")
+                        .AddOption<int>(
+                            CHEAT_INSTANT_PROCESSES_ID,
+                            0,
+                            new int[] { 0, 1, 2 },
+                            new string[] { "None", "Except Burning", "All" })
+                        .AddSpacer()
+                        .AddSpacer()
+                    .SubmenuDone()
                     .AddSpacer()
                     .AddSpacer()
                 .SubmenuDone()
