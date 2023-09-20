@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty
     {
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.1.7";
+        public const string MOD_VERSION = "1.1.8";
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
@@ -637,8 +637,8 @@ namespace KitchenCustomDifficulty
                     .AddOption<int>(
                         RESTART_ON_LOSS_ID,
                         0,
-                        new int[] { 0, 1 },
-                        new string[] { "Off", "On" })
+                        new int[] { -1, 0, 1 },
+                        new string[] { "Never", "Day 1-3", "Always" })
                     .AddSpacer()
                     .AddSubmenu("Cheat", "misc_cheat")
                         .AddLabel("No Losing")

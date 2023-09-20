@@ -35,5 +35,36 @@ namespace KitchenCustomDifficulty
             }
             _instance.EntityManager.SetComponentData(customerEntity, customer);
         }
+
+        internal static bool CustomOfferRestart(out bool shouldRunOriginal)
+        {
+            if (_instance == null || !_instance.TryGetSingleton(out SKitchenStatus kitchenStatus))
+            {
+                shouldRunOriginal = false;
+                return true;
+            }
+
+            switch (Main.PrefSysManager.Get<int>(Main.RESTART_ON_LOSS_ID))
+            {
+                case -1:
+                    shouldRunOriginal = false;
+                    return false;
+                case 1:
+                    shouldRunOriginal = false;
+                    _instance.World.Add(new COfferRestartDay
+                    {
+                        Reason = LossReason.Patience
+                    });
+                    _instance.Set(new SKitchenStatus
+                    {
+                        RemainingLives = kitchenStatus.TotalLives,
+                        TotalLives = kitchenStatus.TotalLives
+                    });
+                    return true;
+                default:
+                    shouldRunOriginal = true;
+                    return false;
+            }
+        }
     }
 }
