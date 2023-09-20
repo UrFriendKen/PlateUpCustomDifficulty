@@ -1,7 +1,6 @@
 ﻿using Kitchen;
 using Kitchen.Layouts;
 using KitchenData;
-using KitchenMods;
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
@@ -59,11 +58,9 @@ namespace KitchenCustomDifficulty
                     CPosition pos = positions[i];
                     CModifyBlueprintStoreAfterDuration improvement = improvements[i];
 
-                    int num = Random.Range(0, LayoutHelpers.AllNearby.Count);
                     int room = GetRoom(pos);
-                    for (int j = 0; j < LayoutHelpers.AllNearby.Count; j++)
+                    foreach (LayoutPosition layoutPosition in Kitchen.RandomExtensions.Shuffle(LayoutHelpers.AllNearby))
                     {
-                        LayoutPosition layoutPosition = LayoutHelpers.AllNearby[(j + num) % LayoutHelpers.AllNearby.Count];
                         Entity occupant = GetOccupant(pos.Position + (Vector3)layoutPosition);
                         int room2 = GetRoom(pos.Position + (Vector3)layoutPosition);
                         if (room == room2 && MeetsConditions(occupant, target))
@@ -98,16 +95,16 @@ namespace KitchenCustomDifficulty
                                 comp.HasBeenMadeFree = true;
                                 performed = true;
                             }
+                            Set(occupant, comp);
+                            target.Target = default(Entity);
                             if (performed && Require(occupant, out CCabinetModifier comp2) && comp2.DisablesDeskAfterImprovement)
                             {
                                 Set<CIsBroken>(desk);
                                 break;
                             }
-                            Set(occupant, comp);
-
-                            target.Target = default(Entity);
                         }
                     }
+                    Set(desk, target);
                 }
             }
             desks.Dispose();
