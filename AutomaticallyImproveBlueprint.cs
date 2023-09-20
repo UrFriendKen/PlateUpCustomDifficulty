@@ -97,14 +97,17 @@ namespace KitchenCustomDifficulty
                             }
                             Set(occupant, comp);
                             target.Target = default(Entity);
-                            if (performed && Require(occupant, out CCabinetModifier comp2) && comp2.DisablesDeskAfterImprovement)
+                            if (performed)
                             {
-                                Set<CIsBroken>(desk);
-                                break;
+                                Set(desk, target);
+                                if (Require(occupant, out CCabinetModifier comp2) && comp2.DisablesDeskAfterImprovement)
+                                {
+                                    Set<CIsBroken>(desk);
+                                    break;
+                                }
                             }
                         }
                     }
-                    Set(desk, target);
                 }
             }
             desks.Dispose();
