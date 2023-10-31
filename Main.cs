@@ -13,7 +13,7 @@ namespace KitchenCustomDifficulty
     {
         public const string MOD_GUID = "IcedMilo.PlateUp.CustomDifficulty";
         public const string MOD_NAME = "Custom Difficulty";
-        public const string MOD_VERSION = "1.1.9";
+        public const string MOD_VERSION = "1.1.10";
 
         #region Shop Preferences
         public const string SHOP_TOTAL_APPLIANCE_BLUEPRINTS_ID = "shopApplianceBlueprints";
@@ -24,6 +24,7 @@ namespace KitchenCustomDifficulty
         public const string DESK_AUTO_RESEARCH_ID = "deskAutoResearch";
         public const string DESK_AUTO_COPY_ID = "deskAutoCopy";
         public const string DESK_AUTO_MAKE_FREE_ID = "deskAutoMakeFree";
+        public const string DESK_AUTO_ENCHANT_ID = "deskAutoEnchant";
         public const string SHOP_BASE_REROLL_COST_ID = "shopBaseRerollCost";
         public const string SHOP_REROLL_COST_INCREASE_ID = "shopRerollCostIncrease";
         public const string SHOP_RESET_REROLL_COST_DAILY_ID = "shopResetRerollCostDaily";
@@ -317,6 +318,12 @@ namespace KitchenCustomDifficulty
                         .AddLabel("Automatically Discount")
                         .AddOption<int>(
                             DESK_AUTO_MAKE_FREE_ID,
+                            0,
+                            new int[] { 0, 1 },
+                            new string[] { "Disabled", "Enabled" })
+                        .AddLabel("Automatically Enchant")
+                        .AddOption<int>(
+                            DESK_AUTO_ENCHANT_ID,
                             0,
                             new int[] { 0, 1 },
                             new string[] { "Disabled", "Enabled" })
