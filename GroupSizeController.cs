@@ -29,23 +29,41 @@ namespace KitchenCustomDifficulty
 
         private void _SetCustomGroupSizes()
         {
-            if (Has<SKitchenParameters>())
+            if (Require(out SKitchenParameters sKitchenParameters))
             {
-                SKitchenParameters sKitchenParameters = GetOrDefault<SKitchenParameters>();
-                int minGroupSize = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID);
+                int minGroupSize = sKitchenParameters.Parameters.MinimumGroupSize;
                 int maxGroupSize = sKitchenParameters.Parameters.MaximumGroupSize;
+                int minGroupSizePref = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MIN_GROUP_SIZE_ID);
                 int maxGroupSizePref = Main.PrefSysManager.Get<int>(Main.CUSTOMERS_MAX_GROUP_SIZE_ID);
 
-                if (minGroupSize > -2)
+                switch (minGroupSizePref)
                 {
-                    sKitchenParameters.Parameters.MinimumGroupSize =  minGroupSize == -1 ? Main.DefaultValuesDict[Main.CUSTOMERS_MIN_GROUP_SIZE_ID] : minGroupSize;
+                    case -2:
+                        break;
+                    case -1:
+                        minGroupSize = Main.DefaultValuesDict[Main.CUSTOMERS_MIN_GROUP_SIZE_ID];
+                        break;
+                    default:
+                        minGroupSize = minGroupSizePref;
+                        break;
                 }
-                if (maxGroupSizePref > -2)
+
+                switch (maxGroupSizePref)
                 {
-                    maxGroupSizePref = maxGroupSizePref == -1 ? Main.DefaultValuesDict[Main.CUSTOMERS_MAX_GROUP_SIZE_ID] : maxGroupSizePref;
-                    maxGroupSize = maxGroupSizePref;
+                    case -2:
+                        break;
+                    case -1:
+                        maxGroupSize = Main.DefaultValuesDict[Main.CUSTOMERS_MAX_GROUP_SIZE_ID];
+                        break;
+                    default:
+                        maxGroupSize = maxGroupSizePref;
+                        break;
                 }
-                maxGroupSize = maxGroupSize < minGroupSize ? minGroupSize : maxGroupSize;
+
+                if (maxGroupSize < minGroupSize)
+                    maxGroupSize = minGroupSize;
+
+                sKitchenParameters.Parameters.MinimumGroupSize = minGroupSize;
                 sKitchenParameters.Parameters.MaximumGroupSize = maxGroupSize;
                 Set(sKitchenParameters);
             }

@@ -12,5 +12,12 @@ namespace KitchenCustomDifficulty.Patches
         {
             GroupSizeController.UseCustomKitchenParameters();
         }
+
+        [HarmonyPatch(typeof(CreateCustomerSchedule), "OnUpdate")]
+        [HarmonyPostfix]
+        static void OnUpdate_Postfix()
+        {
+            GroupSizeController.ResetKitchenParameters();
+        }
     }
 }

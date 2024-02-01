@@ -8,6 +8,13 @@ namespace KitchenCustomDifficulty.Patches
     {
         [HarmonyPatch(typeof(GrantNecessaryAppliances), "OnUpdate")]
         [HarmonyPostfix]
+        static void OnUpdate_Prefix()
+        {
+            GroupSizeController.UseCustomKitchenParameters();
+        }
+
+        [HarmonyPatch(typeof(GrantNecessaryAppliances), "OnUpdate")]
+        [HarmonyPostfix]
         static void OnUpdate_Postfix()
         {
             GroupSizeController.ResetKitchenParameters();
