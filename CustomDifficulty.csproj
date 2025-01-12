@@ -60,7 +60,7 @@
     <Compile Include="Patches\CheckGameOverFromLife_Patch.cs" />
     <Compile Include="Patches\CreateCustomerGroup_Patch.cs" />
     <Compile Include="Patches\CreateCustomerSchedule_Patch.cs" />
-    <Compile Include="Patches\DespawnCustomerGroups_Patch.cs" />
+    <None Include="Patches\DespawnCustomerGroups_Patch.cs" />
     <Compile Include="Patches\EnforcePlayerBounds_Patch.cs" />
     <Compile Include="Patches\GrantNecessaryAppliances_Patch.cs" />
     <Compile Include="Patches\HandleNewParameterChange_Patch.cs" />
